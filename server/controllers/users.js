@@ -31,13 +31,22 @@ function login(req, res) {
   }, function(err, exists) {
     if (exists) {
       console.log("All right!");
-      res.send("All right!");
+      req.session.isAuth = 'true';
     } else {
       console.log("Wrong user data!");
-      res.send("Wrong data!");
     }
+    res.end(req.session.isAuth);
   });
+}
+
+function logout(req, res) {
+    if(req.session.isAuth === 'true'){
+      req.session.isAuth = 'false';
+    }
+    console.log(req.session);
+    res.end(req.session.isAuth);
 }
 
 module.exports.register = register;
 module.exports.login = login;
+module.exports.logout = logout;

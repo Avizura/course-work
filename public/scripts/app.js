@@ -1,6 +1,6 @@
 angular.module('myApp', ['ui.router'])
-  .config(function($stateProvider, $urlRouterProvider){
-    $urlRouterProvider.otherwise('/home');
+  .config(function($stateProvider, $urlRouterProvider) {
+    // $urlRouterProvider.otherwise('/home');
     // Now set up the states
     $stateProvider
       .state('home', {
@@ -18,7 +18,28 @@ angular.module('myApp', ['ui.router'])
         controller: 'loginCtrl'
       });
   })
-  .run(function($state, $rootScope) {
+  .run(function($state, $rootScope, $http, isAuth) {
+    $http.post('http://localhost:5000/isAuth')
+      .success(function(data, status, headers, config) {
+        isAuth.value = data;
+        console.log(data);
+      })
+      .error(function(data, status, headers, config) {
+        // called asynchronously if an error occurs
+        // or server returns response with an error status.
+      });
+
+
     $rootScope.$state = $state;
-    console.log($state);
+    $rootScope.$on('$stateChangeStart',
+      function(event, toState, toParams, fromState, fromParams) {
+        if (isAuth.value === 'false') {
+          if (toState.name === 'login') {
+            return;
+          } else {
+            $state.go('login');
+          }
+        }
+        console.log(isAuth.value);
+      });
   })

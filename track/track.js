@@ -1,4 +1,6 @@
 var request=new XMLHttpRequest();
+var token = document.querySelector('script[token]').getAttribute('token');
+console.log(token);
 
 function toUrlEncoded(obj) {
   var urlEncoded = "";
@@ -14,15 +16,28 @@ window.onerror = function(msg, url, line, column, err) {
   // console.log(err.stack.split(/\bat\b/g)[0]);
   // console.log(err.stack.split(/\bat\b/g)[1]);
   // console.log(err.stack.split(/\bat\b/g)[2]);
-  error  = {
+  var error  = {
     msg: msg,
     url: url,
     line: line,
-    column: column
+    column: column,
+    token: token
   };
   request.open('POST', 'http://localhost:5000/error', true);
   request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   request.send(toUrlEncoded(error));
+}
+
+window.onevent = function(name, url, tag) {
+  var _event = {
+    name: name,
+    url: url,
+    token: token,
+    tag: tag
+  };
+  request.open('POST', 'http://localhost:5000/error', true);
+  request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  request.send(toUrlEncoded(_event));
 }
 
 var clientInfo = function (window) {
