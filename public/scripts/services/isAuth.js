@@ -1,4 +1,5 @@
 angular.module('myApp')
   .value('isAuth', {
-    value: 'false'
+    value: 'false',
+    login: ''
   });

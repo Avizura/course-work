@@ -1,0 +1,97 @@
+body {
+  height: 100vh;
+  overflow: hidden !important;
+  background-image: url(/images/bg.jpg);
+  background-size: cover;
+  /*font-family: 'Raleway', Arial, sans-serif;*/
+  color: #fff !important;
+  font-family: "Avenir Next W01", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+  font-size: 16px;
+  min-height: 100%;
+}
+.auth-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  overflow: hidden;
+  padding: 20px;
+}
+.auth-text{
+    font-size: 5rem;
+    letter-spacing: 8px;
+}
+.auth-btn {
+  /*-webkit-transition: all 250ms ease;
+  -moz-transition: all 250ms ease;
+  transition: all 250ms ease;*/
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 3px;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+  font-size: 3.5rem;
+  padding: 0.78rem 1.3rem;
+  text-decoration: none;
+  text-shadow: none;
+  width: 300px;
+  margin: 30px 0 0 0;
+  outline: none;
+}
+img {
+  vertical-align: middle;
+}
+input{
+  color: black !important;
+}
+.user-container{
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 300px;
+  height: 50px;
+}
+.user-login{
+  color: black;
+  font-weight: bold;
+  font-size: 21px;
+  text-align: right;
+  width: 200px;
+  line-height: 52px;
+}
+.user-avatar {
+  position: absolute;
+  top: 0;
+  right: 15%;
+  margin: 9px;
+  border-radius: 50%;
+  border: 1px solid white;
+}
+
+
+.animate-show{
+  opacity: 1;
+}
+
+.animate-show.ng-hide-add.ng-hide-add-active,
+.animate-show.ng-hide-remove.ng-hide-remove-active {
+  -webkit-transition: all linear 1s;
+  transition: all linear 1s;
+}
+.animate-show.ng-hide-add,
+.animate-show.ng-hide-remove {
+  /* this is required as of 1.3x to properly
+     apply all styling in a show/hide animation */
+  transition: 1s linear all;
+}
+
+.animate-show.ng-hide-add-active,
+.animate-show.ng-hide-remove-active {
+  /* the transition is defined in the active class */
+  transition: 1s linear all;
+}
+
+.animate-show.ng-hide {
+  opacity: 0;
+  /*padding: 0 10px;*/
+}

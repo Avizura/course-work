@@ -46,6 +46,8 @@ app.use(bodyParser.json());
 
 app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/bower_components'));
+app.use(express.static(__dirname + '/bootstrap-3.3.2'));
+app.enable('trust proxy'); //to get ip adress
 
 var errors = require('./server/model/errors.js')(app);
 var events = require('./server/model/events.js')(app);
@@ -70,27 +72,64 @@ bootstrapRoutes();
 //ERROR MSG
 app.post('/error', function(req, res) {
   // console.log(req.body.msg.split(':')[0]);
-  console.log(req.body);
   req.models.errors.create({
       error_msg: req.body.msg.split(':')[0],
       error_url: req.body.url,
       error_line: req.body.line,
       error_column: req.body.column,
       token: req.body.token,
-      visitor_id: 225
+      visitor_id: req.ip
     },
     function(err, items) {
       console.log(err);
     });
-  res.end();
+  // req.models.visitors.exists({
+  //   visitor_id: req.ip
+  // }, function(err, exists) {
+  //   if (err) {
+  //     console.log(err);
+  //   }
+  //   if (exists) {
+  res.end('false');
+});
+// req.models.visitors.exists({
+//   visitor_id: req.ip
+// }, function(err, exists) {
+//   if (err) {
+//     console.log(err);
+//   }
+//   if (exists) {
+//     console.log("Ip exist!");
+// } else {
+//   res.end('There are no errors from this ip adress!');
+// }
+app.post('/visitor', function(req, res) {
+  req.models.visitors.create({
+      visitor_id: req.ip,
+      browser: req.body.browser,
+      browser_version: req.body.browserVersion,
+      mobile: req.body.mobile,
+      flash_version: req.body.flashVersion,
+      OS: req.body.OS,
+      OS_version: req.body.OS_Version,
+      viewport: req.body.viewport
+    },
+    function(err, items) {
+      console.log(err);
+    });
+  res.end('Object Visitor created successfully!');
 });
 
+
 app.post('/isAuth', function(req, res) {
-  // req.session.USER0;
-  console.log(req.session);
-  res.end(req.session.isAuth)
+  console.log('onAuth');
+  console.log(req.session.isAuth);
+  res.json({
+    isAuth: req.session.isAuth,
+    login: req.session.login
+  });
   // res.end(JSON.stringify(req.session));
-})
+});
 
 server = app.listen(server_port, function() {
   console.log("Listening on port " + server_port);

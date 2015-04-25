@@ -1,11 +1,12 @@
 angular.module('myApp', ['ui.router'])
   .config(function($stateProvider, $urlRouterProvider) {
-    // $urlRouterProvider.otherwise('/home');
+    $urlRouterProvider.otherwise('/home');
     // Now set up the states
     $stateProvider
       .state('home', {
         url: '/home',
-        templateUrl: 'views/home.html'
+        templateUrl: 'views/home.html',
+        controller: 'homeCtrl'
       })
       .state('registration', {
         url: '/user/registration',
@@ -16,30 +17,45 @@ angular.module('myApp', ['ui.router'])
         url: '/user/login',
         templateUrl: 'views/login.html',
         controller: 'loginCtrl'
+      })
+      .state('charts', {
+        url: '/charts',
+        templateUrl: 'views/charts.html'
       });
   })
   .run(function($state, $rootScope, $http, isAuth) {
     $http.post('http://localhost:5000/isAuth')
       .success(function(data, status, headers, config) {
-        isAuth.value = data;
         console.log(data);
+        console.log(data.isAuth);
+        if (data.isAuth === 'true') {//Если авторизован
+          isAuth.value = 'true';
+          isAuth.login = data.login;
+        } else {
+          isAuth.value = 'false';
+          isAuth.login = '';
+          $state.go('home');
+        }
+          console.log('isAuth on start');
+          console.log(isAuth.value);
       })
       .error(function(data, status, headers, config) {
         // called asynchronously if an error occurs
         // or server returns response with an error status.
       });
 
-
     $rootScope.$state = $state;
     $rootScope.$on('$stateChangeStart',
       function(event, toState, toParams, fromState, fromParams) {
         if (isAuth.value === 'false') {
-          if (toState.name === 'login') {
+          if (toState.name === 'home') {
             return;
           } else {
-            $state.go('login');
+            $state.go('home');
+            console.log('redirect');
           }
         }
+        console.log('isAuth');
         console.log(isAuth.value);
       });
   })

@@ -3,7 +3,6 @@ function register(req, res) {
   req.models.users.exists({
     login: req.body.login,
   }, function(err, exists) {
-    console.log('HANDLING!!!!');
     if (err) {}
     if (exists) {
       console.log("EXIST");
@@ -32,19 +31,20 @@ function login(req, res) {
     if (exists) {
       console.log("All right!");
       req.session.isAuth = 'true';
+      req.session.login = req.body.login;
     } else {
+      req.session.isAuth = 'false';
       console.log("Wrong user data!");
     }
-    res.end(req.session.isAuth);
+    res.json({isAuth: req.session.isAuth, login: req.session.login});
   });
 }
 
 function logout(req, res) {
-    if(req.session.isAuth === 'true'){
-      req.session.isAuth = 'false';
-    }
+    req.session.isAuth = 'false';
+    req.session.login = '';
     console.log(req.session);
-    res.end(req.session.isAuth);
+    res.end('Logout success!');
 }
 
 module.exports.register = register;

@@ -4,14 +4,16 @@ var visitors = function(app) {
     define: function(db, models, next) {
       models.visitors = db.define("visitors", {
         visitor_id: {
-          type: 'number',
+          type: 'text',
           key: true
         },
         timestamp: Number,
-        time_on_page: Number,
-        visitor_time: Number,
         browser: String,
         OS: String,
+        OS_version: String,
+        mobile: String,
+        flash_version: String,
+        cookies: String,
         viewport: String
       });
       next();

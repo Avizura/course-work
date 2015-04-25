@@ -1,1 +1,28 @@
-<h1>Charts</h1>
+<nav class="navbar navbar-default nav">
+  <div class="container">
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-6">
+      <ul class="nav navbar-nav">
+        <li ng-class="{'active': $state.current.name.indexOf('home') >= 0}"><a ui-sref='home'>Home</a>
+        </li>
+        <li ng-click="" ng-class="{'active': $state.current.name.indexOf('charts') >= 0}"><a ui-sref='charts'>Charts</a>
+        </li>
+        <li ng-class="{'active': $state.current.name.indexOf('interests') >= 0}"><a ui-sref='interests'>Interests</a>
+        </li>
+        <li ng-class="{'active': $state.current.name.indexOf('study') >= 0}"><a ui-sref='study'>Study</a>
+        </li>
+        <li ng-class="{'active': $state.current.name.indexOf('album') >= 0}"><a ui-sref='album'>Album</a>
+        </li>
+        <li ng-class="{'active': $state.current.name.indexOf('feedback') >= 0}"><a ui-sref='feedback'>Feedback</a>
+        </li>
+        <li ng-class="{'active': $state.current.name.indexOf('test') >= 0}"><a ui-sref='test'>Test</a>
+        </li>
+        <!-- <li> <img src="images/avatar.gif"> </li> -->
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="user-container">
+  <login></login>
+  <img alt="user-avatar" class="user-avatar" src="images/avatar.gif">
+</div>
+<div ng-show="false">Michael</div>

@@ -1,5 +1,6 @@
 var request=new XMLHttpRequest();
 var token = document.querySelector('script[token]').getAttribute('token');
+var flag = 'false'; //
 console.log(token);
 
 function toUrlEncoded(obj) {
@@ -23,9 +24,22 @@ window.onerror = function(msg, url, line, column, err) {
     column: column,
     token: token
   };
+  request.onreadystatechange=function(){
+  if (request.readyState==4 && request.status==200){
+    console.log(request.responseText);
+    if(request.responseText === 'false'){
+      var visitor = clientInfo(window);
+      console.log(visitor);
+      request.open('POST', 'http://localhost:5000/visitor', true);
+      request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      request.send(toUrlEncoded(visitor));
+    }
+    }
+  }
   request.open('POST', 'http://localhost:5000/error', true);
   request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   request.send(toUrlEncoded(error));
+
 }
 
 window.onevent = function(name, url, tag) {
@@ -200,17 +214,16 @@ var clientInfo = function (window) {
         }
     }
 
-    window.jscd = {
-        screen: screenSize,
+    return window.jscd = {
+        viewport: screenSize,
         browser: browser,
         browserVersion: version,
         mobile: mobile,
-        os: os,
-        osVersion: osVersion,
+        OS: os,
+        OS_Version: osVersion,
         cookies: cookieEnabled,
         flashVersion: flashVersion
     };
 }
 
-clientInfo(window);
-throw new Error();
+// throw new Error();
