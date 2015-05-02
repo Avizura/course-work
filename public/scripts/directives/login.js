@@ -5,6 +5,8 @@ angular.module('myApp')
       // template: '<div class="user-login">Avizura</div>',
       link: function(scope, element, attrs) {
         scope.isAuth = isAuth.login;
+        console.log('login');
+        console.log(isAuth.login);
       }
     }
   });

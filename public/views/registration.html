@@ -1,4 +1,17 @@
-<h2>Registration</h2>
-<input value="login" ng-model="user.login">
-<input type="password" value="password" ng-model="user.password">
-<button type="submit" name="button" ng-click="submit()">Submit</button>
+<div class="auth-container">
+  <div class="auth-text">{Track.js}</div>
+  <form class="form-5 clearfix animate-show">
+    <p class="input-bar">
+      <input type="text" name="login" placeholder="Username" ng-model="user.login">
+      <input type="password" name="password" placeholder="Password" ng-model="user.password">
+      <input type="text" name="email" id="email" placeholder="Email" ng-model="user.email">
+    </p>
+    <button type="submit" name="submit" class="submit sign-up" ng-click="register()">
+      <i class="icon-arrow-right"></i>
+      <span>Sign in</span>
+    </button>
+    <div class="sign-container" ng-click="signIn()">
+      <div>Already have an account?
+        <p></p><b>Sign in!</b> </div>
+    </div>
+  </form>​​​​

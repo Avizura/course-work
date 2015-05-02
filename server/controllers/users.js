@@ -11,7 +11,8 @@ function register(req, res) {
       console.log("NOT EXIST");
       req.models.users.create({
         login: req.body.login,
-        password: req.body.password
+        password: req.body.password,
+        email: req.body.email
       }, function(err) {});
       var token = uid(16);
       req.models.tokens.create({

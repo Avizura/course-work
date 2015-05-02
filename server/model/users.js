@@ -7,7 +7,8 @@ var users = function(app) {
           type: 'text',
           key: true
         },
-        password: String
+        password: String,
+        email: String
       });
       next();
     }

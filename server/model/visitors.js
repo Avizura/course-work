@@ -9,11 +9,12 @@ var visitors = function(app) {
         },
         timestamp: Number,
         browser: String,
+        browser_version: String,
         OS: String,
         OS_version: String,
         mobile: String,
-        flash_version: String,
         cookies: String,
+        flash_version: String,
         viewport: String
       });
       next();

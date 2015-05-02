@@ -16,13 +16,11 @@
         </li>
         <li ng-class="{'active': $state.current.name.indexOf('test') >= 0}"><a ui-sref='test'>Test</a>
         </li>
-        <!-- <li> <img src="images/avatar.gif"> </li> -->
       </ul>
     </div>
   </div>
 </nav>
-<div class="user-container">
+<div class="user-container" ng-click="dropdown()">
   <login></login>
   <img alt="user-avatar" class="user-avatar" src="images/avatar.gif">
 </div>
-<div ng-show="false">Michael</div>

@@ -1,22 +1,22 @@
 angular.module('myApp', ['ui.router'])
   .config(function($stateProvider, $urlRouterProvider) {
-    $urlRouterProvider.otherwise('/home');
+    $urlRouterProvider.otherwise('/login');
     // Now set up the states
     $stateProvider
-      .state('home', {
-        url: '/home',
-        templateUrl: 'views/home.html',
-        controller: 'homeCtrl'
+    .state('home', {
+      url: '/home',
+      templateUrl: 'views/home.html',
+      controller: 'homeCtrl'
+    })
+      .state('login', {
+        url: '/user/login',
+        templateUrl: 'views/login.html',
+        controller: 'loginCtrl'
       })
       .state('registration', {
         url: '/user/registration',
         templateUrl: 'views/registration.html',
         controller: 'regCtrl'
-      })
-      .state('login', {
-        url: '/user/login',
-        templateUrl: 'views/login.html',
-        controller: 'loginCtrl'
       })
       .state('charts', {
         url: '/charts',
@@ -34,7 +34,7 @@ angular.module('myApp', ['ui.router'])
         } else {
           isAuth.value = 'false';
           isAuth.login = '';
-          $state.go('home');
+          $state.go('login');
         }
           console.log('isAuth on start');
           console.log(isAuth.value);
@@ -44,15 +44,17 @@ angular.module('myApp', ['ui.router'])
         // or server returns response with an error status.
       });
 
-    $rootScope.$state = $state;
+    // $rootScope.$state = $state;
     $rootScope.$on('$stateChangeStart',
       function(event, toState, toParams, fromState, fromParams) {
         if (isAuth.value === 'false') {
-          if (toState.name === 'home') {
+          if (toState.name === 'login' || toState.name === 'registration') {
             return;
           } else {
-            $state.go('home');
+            event.preventDefault();
+            $state.go('login');
             console.log('redirect');
+            console.log($state);
           }
         }
         console.log('isAuth');

@@ -9,11 +9,22 @@ body {
   font-size: 16px;
   min-height: 100%;
 }
+.home-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -104px 0 0 -170px;
+  /*transform: translate(-50%, -50%);*/
+  text-align: center;
+  overflow: hidden;
+  padding: 20px;
+}
 .auth-container {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  margin: -170px 0 0 -170px;
+  /*transform: translate(-50%, -50%);*/
   text-align: center;
   overflow: hidden;
   padding: 20px;
@@ -37,6 +48,19 @@ body {
   width: 300px;
   margin: 30px 0 0 0;
   outline: none;
+}
+.sign-container{
+  width: 300px;
+  height: 50px;
+  cursor: pointer;
+  /*background: rgba(255, 255, 255, 0.08);*/
+  /*border-radius: 10px;*/
+}
+.sign-container p{
+  height: 1px;
+  width: 300px;
+  background-color: #fff;
+  margin: 0;
 }
 img {
   vertical-align: middle;

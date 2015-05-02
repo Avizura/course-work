@@ -19,9 +19,7 @@
     "grunt-nodemon": "^0.4.0",
     "load-grunt-tasks": "^3.1.0",
     "mysql": "^2.5.5",
-    "orm": "^2.1.22",
-    "passport": "^0.2.1",
-    "sequelize": "^2.0.3"
+    "orm": "^2.1.22"
   },
   "dependencies": {
     "express-session": "^1.10.4",

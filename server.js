@@ -56,62 +56,59 @@ var visitors = require('./server/model/visitors.js')(app);
 var sessions = require('./server/model/sessions.js')(app);
 var tokens = require('./server/model/tokens.js')(app);
 
-//error handling
+//Error handling
 app.use(function(err, req, res, next) {
   console.error(err.stack);
 });
 
-function bootstrapRoutes() {
+//Loading all modules
+(function bootstrapRoutes() {
   util.walk(appPath + '/server/routes', 'middlewares', function(path) {
     console.log(path);
     require(path)(app);
   });
-}
-bootstrapRoutes();
+})();
 
 //ERROR MSG
-app.post('/error', function(req, res) {
-  // console.log(req.body.msg.split(':')[0]);
-  req.models.errors.create({
-      error_msg: req.body.msg.split(':')[0],
-      error_url: req.body.url,
-      error_line: req.body.line,
-      error_column: req.body.column,
-      token: req.body.token,
-      visitor_id: req.ip
-    },
-    function(err, items) {
-      console.log(err);
-    });
-  // req.models.visitors.exists({
-  //   visitor_id: req.ip
-  // }, function(err, exists) {
-  //   if (err) {
-  //     console.log(err);
-  //   }
-  //   if (exists) {
-  res.end('false');
-});
-// req.models.visitors.exists({
-//   visitor_id: req.ip
-// }, function(err, exists) {
-//   if (err) {
-//     console.log(err);
-//   }
-//   if (exists) {
-//     console.log("Ip exist!");
-// } else {
-//   res.end('There are no errors from this ip adress!');
-// }
+// app.post('/error', function(req, res) {
+//   // console.log(req.body.msg.split(':')[0]);
+//   console.log(req.body);
+//   req.models.errors.create({
+//       error_msg: req.body.msg.split(':')[0],
+//       error_url: req.body.url,
+//       error_line: req.body.line,
+//       error_column: req.body.column,
+//       token: req.body.token,
+//       visitor_id: req.ip
+//     },
+//     function(err, items) {
+//       console.log(err);
+//     });
+//   req.models.visitors.exists({
+//     visitor_id: req.ip
+//   }, function(err, exists) {
+//     if (err) {
+//       console.log(err);
+//     }
+//     if (exists){
+//       console.log('Visitor already exist');
+//       res.end('true');
+//     }
+//     else res.end('false');
+//   });
+// });
+
 app.post('/visitor', function(req, res) {
+  console.log(req.body);
   req.models.visitors.create({
       visitor_id: req.ip,
       browser: req.body.browser,
       browser_version: req.body.browserVersion,
-      mobile: req.body.mobile,
-      flash_version: req.body.flashVersion,
       OS: req.body.OS,
       OS_version: req.body.OS_Version,
+      mobile: req.body.mobile,
+      cookies: req.body.cookies,
+      flash_version: req.body.flashVersion,
       viewport: req.body.viewport
     },
     function(err, items) {
@@ -120,7 +117,6 @@ app.post('/visitor', function(req, res) {
   res.end('Object Visitor created successfully!');
 });
 
-
 app.post('/isAuth', function(req, res) {
   console.log('onAuth');
   console.log(req.session.isAuth);
@@ -128,7 +124,6 @@ app.post('/isAuth', function(req, res) {
     isAuth: req.session.isAuth,
     login: req.session.login
   });
-  // res.end(JSON.stringify(req.session));
 });
 
 server = app.listen(server_port, function() {

@@ -1,19 +1,25 @@
 <html>
-  <head>
-    <title>myTrackjs</title>
-    <meta charset="utf-8">
-    <!-- <link rel="stylesheet" href="styles\style.css"> -->
-  </head>
 
-  <body ng-app="myApp">
-    <h1> Client </h1>
-    <button type="button" name="button" ng-click='lol()'>Жмяк!</button>
-  </body>
-  <script>
+<head>
+  <title>myTrackjs</title>
+  <meta charset="utf-8">
+  <!-- <link rel="stylesheet" href="styles\style.css"> -->
+  <script src="track.js" token="3SMeUKVsB2WNqwWR"></script>
+</head>
+
+<body ng-app="myApp">
+  <h1> Client </h1>
+  <button type="button" name="button" onclick='lol()'>Жмяк!</button>
+</body>
+<script>
   throw new Error();
-  </script>
-  <script src="track.js" token="3SMeUKVsB2WNqwWR" ng-model='lol'></script>
-  <!--<script src="public/scripts/app.js"></script>
-  <script src="/node_modules/angular/angular.js"></script>
+  var lol = function(){
+    console.log('lolll');
+    throw new Error();
+  }
+</script>
+<script src="app.js"></script>
+<!--  <script src="/node_modules/angular/angular.js"></script>
   <script src="/bower_components/jquery.js"></script>-->
+
 </html>
