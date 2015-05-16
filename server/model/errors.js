@@ -11,9 +11,10 @@ var errors = function(app) {
         error_url: String,
         error_line: Number,
         error_column: Number,
-        error_timestamp: Number,
+        error_timestamp: String,
         token: String,
-        visitor_id: Number
+        visitor_id: Number,
+        error_date: String
       });
       next();
     }

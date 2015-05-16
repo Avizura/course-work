@@ -1,7 +1,12 @@
 var request = new XMLHttpRequest();
 var token = document.querySelector('script[token]').getAttribute('token');
-var flag = 'false'; //
 console.log(token);
+
+(function hit(_token){
+  request.open('POST', 'http://192.168.0.168:5000/hit', true);
+  request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  request.send(toUrlEncoded({token: _token}));
+})(token)
 
 function toUrlEncoded(obj) {
   var urlEncoded = "";
@@ -12,7 +17,7 @@ function toUrlEncoded(obj) {
 }
 
 window.onerror = function(msg, url, line, column, err) {
-  console.log('Bingo' + err.stack);
+  console.log('Bingo ' + err.stack);
   // console.log(err.stack.split(/^    at/gm));
   // console.log(err.stack.split(/\bat\b/g)[0]);
   // console.log(err.stack.split(/\bat\b/g)[1]);
@@ -36,7 +41,6 @@ window.onerror = function(msg, url, line, column, err) {
         }
       }
     }
-    // request.open('POST', 'http://localhost:5000/error', true);
   request.open('POST', 'http://192.168.0.168:5000/error', true);
   request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   request.send(toUrlEncoded(error));
@@ -50,15 +54,10 @@ window.onevent = function(name, url, tag) {
     token: token,
     tag: tag
   };
-  request.open('POST', 'http://localhost:5000/error', true);
+  request.open('POST', 'http://192.168.0.168:5000/event', true);
   request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   request.send(toUrlEncoded(_event));
 }
-
-window.onload = function() {
-  console.log('load');
-  throw new Error();
-};
 
 var clientInfo = function(window) {
   {

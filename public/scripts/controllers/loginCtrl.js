@@ -6,32 +6,31 @@ angular.module('myApp')
       email: ""
     };
     $scope.login = function() {
-      $http.post("http://localhost:5000/user/login", $scope.user)
+      $http.post("http://192.168.0.168:5000/user/login", $scope.user)
         .success(function(data) {
+          isAuth.value = data.isAuth;
           if (data.isAuth) {//Если введены верные данные
-            isAuth.value = 'true';
             isAuth.login = data.login;
-            $state.go('charts');
+            $state.go('navbar.charts');
           } else {
-            isAuth.value = 'false';
+            console.log('Wrong login data!');
             isAuth.login = '';
           }
-            console.log(isAuth.value);
         })
     };
     $scope.logout = function() {
-      $http.post("http://localhost:5000/user/logout")
+      $http.post("http://192.168.0.168:5000/user/logout")
         .success(function(data) {
-            isAuth.value = 'false';
+            isAuth.value = false;
             isAuth.login = '';
             $state.go('home');
             console.log(data);
         })
     };
     $scope.start = function(){
-      $scope.clicked = 'true';
-    }
+      $scope.clicked = true;
+    };
     $scope.signUp = function(){
       $state.go('registration');
-    }
+    };
   })

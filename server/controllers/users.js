@@ -9,12 +9,13 @@ function register(req, res) {
       res.end("This login is already taken. Please choose another.")
     } else {
       console.log("NOT EXIST");
+      var token = uid(16);
       req.models.users.create({
         login: req.body.login,
         password: req.body.password,
-        email: req.body.email
+        email: req.body.email,
+        token: token
       }, function(err) {});
-      var token = uid(16);
       req.models.tokens.create({
         token: token,
         user: req.body.login
@@ -31,10 +32,10 @@ function login(req, res) {
   }, function(err, exists) {
     if (exists) {
       console.log("All right!");
-      req.session.isAuth = 'true';
+      req.session.isAuth = true;
       req.session.login = req.body.login;
     } else {
-      req.session.isAuth = 'false';
+      req.session.isAuth = false;
       console.log("Wrong user data!");
     }
     res.json({isAuth: req.session.isAuth, login: req.session.login});

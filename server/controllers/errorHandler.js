@@ -1,7 +1,7 @@
 //ERROR MSG
 function errorHandler(req, res) {
-  console.log(req.body);
-  console.log(req.body.msg.split(':'));
+  // console.log(req.body);
+  // console.log(req.body.msg.split(':'));
   req.models.errors.create({
       error_msg: req.body.msg.split(':')[0],
       error_url: req.body.url,

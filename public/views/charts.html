@@ -1,26 +1,73 @@
-<nav class="navbar navbar-default nav">
-  <div class="container">
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-6">
-      <ul class="nav navbar-nav">
-        <li ng-class="{'active': $state.current.name.indexOf('home') >= 0}"><a ui-sref='home'>Home</a>
+<!-- <aside class="aside-bar" ng-show="clicked">
+  <ul id="aside-nav">
+    <li>Dashboard</li>
+    <li>Recent</li>
+    <li>Messages</li>
+    <li>Urls</li>
+    <li>Browsers</li>
+    <li>Users</li>
+    <li>Daily</li>
+    <li>Starred</li>
+  </ul>
+</aside> -->
+<!-- <button ng-click="clickFunc()">Privet</button> -->
+
+<!-- Button to trigger a default aside with a scope as an object {title:'', content:'', etc.} -->
+<!-- <button type="button" class="btn btn-lg btn-primary" data-animation="am-slide-left" bs-aside="aside">Click to toggle aside
+  <br>
+  <small>(using an object)</small>
+</button> -->
+
+<!-- <button type="button" class="btn btn-lg btn-primary" data-animation="am-flip-x" bs-dropdown="dropdown"
+  aria-haspopup="true" aria-expanded="false" placement ='bottom-right'>Click to toggle dropdown
+  <br>
+  <small>(using an object)</small>
+</button> -->
+<!-- <lineChart></lineChart> -->
+
+<!-- <highchart id="chart1" config="chartConfig"></highchart> -->
+<div id="wrapper">
+  <nav class="navbar-inverse">
+    <div class="collapse navbar-collapse navbar-ex1-collapse">
+      <ul class="nav navbar-nav side-nav">
+        <li class="active">
+          <a ui-sref="navbar.charts.dashboard"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
         </li>
-        <li ng-click="" ng-class="{'active': $state.current.name.indexOf('charts') >= 0}"><a ui-sref='charts'>Charts</a>
+        <li>
+          <a href="charts.html"><i class="fa fa-fw fa-bar-chart-o"></i> Recent</a>
         </li>
-        <li ng-class="{'active': $state.current.name.indexOf('interests') >= 0}"><a ui-sref='interests'>Interests</a>
+        <li>
+          <a href="tables.html"><i class="fa fa-fw fa-table"></i> Messages</a>
         </li>
-        <li ng-class="{'active': $state.current.name.indexOf('study') >= 0}"><a ui-sref='study'>Study</a>
+        <li>
+          <a href="forms.html"><i class="fa fa-fw fa-edit"></i> Urls</a>
         </li>
-        <li ng-class="{'active': $state.current.name.indexOf('album') >= 0}"><a ui-sref='album'>Album</a>
+        <li>
+          <a href="">
+            <span class="glyphicon glyphicon-globe" aria-hidden="true"></span> Browsers</a>
         </li>
-        <li ng-class="{'active': $state.current.name.indexOf('feedback') >= 0}"><a ui-sref='feedback'>Feedback</a>
+        <li>
+          <a href="">
+            <span class="glyphicon glyphicon-user" aria-hidden="true"></span> Users</a>
         </li>
-        <li ng-class="{'active': $state.current.name.indexOf('test') >= 0}"><a ui-sref='test'>Test</a>
+        <li>
+          <a href="blank-page.html"><i class="fa fa-fw fa-file"></i> Daily</a>
+        </li>
+        <li>
+          <a href="">
+            <span class="glyphicon glyphicon-star" aria-hidden="true"></span> Starred</a>
         </li>
       </ul>
     </div>
+  </nav>
+  <div id="page-wrapper">
+
+    <div class="container-fluid">
+      <h2>Statistics Overview</h2>
+      <p></p>
+      <ui-view></ui-view>
+    </div>
+    <!-- /.container-fluid -->
   </div>
-</nav>
-<div class="user-container" ng-click="dropdown()">
-  <login></login>
-  <img alt="user-avatar" class="user-avatar" src="images/avatar.gif">
+  <!-- /#page-wrapper -->
 </div>

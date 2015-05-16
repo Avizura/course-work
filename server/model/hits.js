@@ -1,18 +1,16 @@
 orm = require('orm');
-var users = function(app) {
+var hits = function(app) {
   app.use(orm.express("mysql://root:prosport@localhost/track_db", {
     define: function(db, models, next) {
-      models.users = db.define("users", {
-        login: {
+      models.hits = db.define("hits", {
+        token: {
           type: 'text',
           key: true
         },
-        password: String,
-        email: String,
-        token: String
+        count: Number
       });
       next();
     }
   }));
 }
-module.exports = users;
+module.exports = hits;
