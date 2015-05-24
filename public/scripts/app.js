@@ -1,4 +1,4 @@
-angular.module('myApp', ['ui.router', 'ngAnimate', 'mgcrea.ngStrap', 'ngSanitize','highcharts-ng'])
+angular.module('myApp', ['ui.router', 'ngAnimate', 'mgcrea.ngStrap', 'highcharts-ng'])
   .config(function($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise('/user/login');
     // Now set up the states
@@ -28,23 +28,29 @@ angular.module('myApp', ['ui.router', 'ngAnimate', 'mgcrea.ngStrap', 'ngSanitize
         templateUrl: 'views/charts.html',
         controller: 'chartsCtrl'
       })
-      // .state('test', {
-      //   url: '/test',
-      //   templateUrl: 'views/asidebar.html'
-      // })
       .state('navbar.charts.dashboard',{
         url: '/dashboard',
         templateUrl: 'views/charts-dashboard.html',
         controller: 'chartsDashboardCtrl'
+      })
+      .state('navbar.charts.recent', {
+        url: '/recent',
+        templateUrl: 'views/charts-recent.html',
+        controller: 'chartsRecentCtrl'
+      })
+      .state('navbar.charts.daily', {
+        url: '/daily',
+        templateUrl: 'views/charts-daily.html',
+        controller: 'chartsDailyCtrl'
+      })
+      .state('navbar.charts.users', {
+        url: '/users',
+        templateUrl: 'views/charts-users.html',
+        controller: 'chartsUsersCtrl'
       });
-      // .state('charts', {
-      //   url: '/charts',
-      //   templateUrl: 'views/charts.html',
-      //   controller: 'chartsCtrl'
-      // });
   })
-  .run(function($state, $rootScope, $http, isAuth) {
-    $http.post('http://192.168.0.168:5000/isAuth')
+  .run(function($state, $rootScope, $http, isAuth, config) {
+    $http.post(config.serverAddress+'/isAuth')
       .success(function(data, status, headers, config) {
         console.log(data);
         console.log(data.isAuth);
@@ -62,10 +68,12 @@ angular.module('myApp', ['ui.router', 'ngAnimate', 'mgcrea.ngStrap', 'ngSanitize
         // called asynchronously if an error occurs
         // or server returns response with an error status.
       });
-      
+
     // $rootScope.$state = $state;
     $rootScope.$on('$stateChangeStart',
       function(event, toState, toParams, fromState, fromParams) {
+        // console.log("STATE");
+        // console.log($state);
         if (isAuth.value == false) {
           if (toState.name === 'login' || toState.name === 'registration') {
             return;

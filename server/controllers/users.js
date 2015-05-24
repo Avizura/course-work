@@ -1,4 +1,5 @@
 var uid = require('rand-token').uid;
+
 function register(req, res) {
   req.models.users.exists({
     login: req.body.login,
@@ -6,7 +7,7 @@ function register(req, res) {
     if (err) {}
     if (exists) {
       console.log("EXIST");
-      res.end("This login is already taken. Please choose another.")
+      res.end();
     } else {
       console.log("NOT EXIST");
       var token = uid(16);
@@ -15,12 +16,21 @@ function register(req, res) {
         password: req.body.password,
         email: req.body.email,
         token: token
-      }, function(err) {});
-      req.models.tokens.create({
-        token: token,
-        user: req.body.login
-      }, function() {});
-      res.end();
+      }, function(err) {
+        console.log(err);
+        req.models.tokens.create({
+          token: token,
+          login: req.body.login
+        }, function(err) {
+          console.log(err);
+          req.session.isAuth = true;
+          req.session.login = req.body.login;
+          res.json({
+            isAuth: req.session.isAuth,
+            login: req.session.login
+          });
+        });
+      });
     }
   });
 }
@@ -38,15 +48,18 @@ function login(req, res) {
       req.session.isAuth = false;
       console.log("Wrong user data!");
     }
-    res.json({isAuth: req.session.isAuth, login: req.session.login});
+    res.json({
+      isAuth: req.session.isAuth,
+      login: req.session.login
+    });
   });
 }
 
 function logout(req, res) {
-    req.session.isAuth = 'false';
-    req.session.login = '';
-    console.log(req.session);
-    res.end('Logout success!');
+  req.session.isAuth = 'false';
+  req.session.login = '';
+  console.log(req.session);
+  res.end('Logout success!');
 }
 
 module.exports.register = register;

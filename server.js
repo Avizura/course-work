@@ -20,6 +20,20 @@ var express = require('express'),
     next();
   };
 
+var mysql = require('mysql');
+var connection = mysql.createConnection({
+  host : 'localhost',
+  user : 'root',
+  password : 'prosport',
+  database : 'track_db'
+});
+connection.connect(function(err) {
+  if (err) {
+    console.error('error connecting: ' + err.stack);
+    return;
+  }
+  console.log('connected as id ' + connection.threadId);
+});
 
 var options = {
   host: 'localhost',
@@ -38,7 +52,7 @@ app.use(session({
   resave: true,
   saveUninitialized: true,
   cookie: {
-    maxAge: 600000 //10 min
+    maxAge: 1800000 //20 min
   }
 }));
 app.use(allowCrossDomain);
@@ -102,88 +116,206 @@ app.post('/isAuth', function(req, res) {
 });
 
 app.post('/hit', function(req, res) {
-  //console.log('hit');
-  //console.log(req.body);
-  req.models.hits.get(req.body.token, function(err, hits) {
-    //console.log('hits');
-    //console.log(hits);
-    //console.log(hits.count);
-    hits.count++;
-    //console.log(hits.count);
-    hits.save(function(err) {
-      //console.log('saved!!');
-      //console.log(err);
-    });
+  var mydate = new Date().toLocaleDateString('ru');
+  req.models.hits.find({token: req.body.token, hit_date: mydate}, function(err, hits) {
+    console.log('hits');
+    console.log(hits);
+    if (hits[0]) {
+      hits[0].count++;
+      hits[0].save(function(err) {
+        console.log('saved!!');
+        console.log(err);
+      });
+    }
+    else{
+      console.log('hits false');
+      var mydate = new Date().toLocaleDateString('ru');
+      console.log('mydate ' + mydate);
+      req.models.hits.create({
+          token: req.body.token,
+          hit_date: mydate,
+          count: 1
+        },
+        function(err, items) {
+          console.log(err);
+        });
+    }
   });
-  req.models.errors.
   res.end();
 });
 
 app.post('/hits', function(req, res) {
-  var errorsCount,
-    hitsCount;
+  var errorsCount = "";
+  var hitsCount = 0;
+  // var curDate =  new Date().toLocaleDateString('ru');
   req.models.users.get(req.session.login, function(err, user) {
-    //console.log('user');
-    //console.log(user);
-    //console.log(user.token);
-    req.models.hits.get(user.token, function(err, hits) {
-      //console.log('hits');
-      //console.log(hits);
-      hitsCount = hits.count;
-      req.models.errors.count('error_id', function(err, count) {
-        //console.log('count ' + count);
-        errorsCount = count;
-        //console.log('HOLYFUCK');
-        //console.log(hitsCount);
-        //console.log(errorsCount);
+    req.models.hits.find({
+      token: user.token
+    }, function(err, hits) {
+      console.log('HITS!!!');
+      console.log(err, hits);
+      if (hits) {
+        for (var i = 0; i < hits.length; ++i) {
+          hitsCount += hits[i].count;
+        }
+        console.log(hitsCount);
+        req.models.errors.count('error_id', function(err, count) {
+          //console.log('count ' + count);
+          errorsCount = count;
+          //console.log('HOLYFUCK');
+          //console.log(hitsCount);
+          //console.log(errorsCount);
+          res.json({
+            hits: hitsCount,
+            errors: errorsCount
+          });
+        });
+      }
+    });
+  });
+});
+
+app.post('/timeline', function(req, res) {
+  req.models.users.get(req.session.login, function(err, user) {
+    req.models.errors.aggregate(['error_date'], {token: user.token}).count().groupBy('error_date').order('error_date', 'Z').limit(6).get(function(err, errors) {
+      req.models.hits.find({token: user.token}, ['hit_date', 'Z'], {limit: 6}, function(err, hits) {
+        console.log('HITS DATA NOW!');
+        console.log(hits);
+        console.log('HALELUYA');
+        console.log(errors);
         res.json({
-          hits: hitsCount,
-          errors: errorsCount
+          errors: errors,
+          hits: hits
         });
       });
     });
   });
 });
 
-app.post('/timeline', function(req, res) {
-  req.models.errors.aggregate(['error_date']).count().groupBy('error_date').get(function(err, data){
-    console.log('HALELUYA');
-    console.log(data[0].error_date);
-    res.json({
-      data: data
+app.post('/browsers', function(req, res) {
+  req.models.tokens.find({login: req.session.login}, function(err, data) {
+    console.log('TOKEN');
+    console.log(data);
+    connection.query('select visitors.browser, count(*) from errors join visitors on errors.visitor_id = visitors.visitor_id where errors.token = \"' + data[0].token + '\" group by errors.visitor_id order by count(*) desc limit 4;', function(err, rows, fields) {
+      if (err) {
+        console.log(err);
+      }
+      if ('undefined' != typeof(rows[0])) {
+        console.log(rows);
+        res.json(rows);
+      } else {
+        console.log('not found!');
+      }
+    });
+  });
+});
+
+app.post('/urls', function(req, res){
+  req.models.users.get(req.session.login, function(err, user) {
+    req.models.errors.aggregate(['error_url'], {token: user.token}).count().groupBy('error_url').order('count', 'Z').limit(4).get(function(err, data) {
+      console.log('URLS');
+      // console.log(data);
+        res.json({
+          error: data
+        });
     })
   });
-  // req.models.errors.aggregate().distinct('error_date').get(function(err, dates) {
-  //   var number = Object.keys(dates).length,
-  //     counter = 0,
-  //     array = [],
-  //     temp;
-  //   for (var property in dates) {
-  //     if (dates.hasOwnProperty(property)) {
-  //       if (dates[property] != null) {
-  //         temp = new Date(dates[property]).toLocaleDateString();
-  //         array.push({
-  //           date: temp,
-  //           count: ""
-  //         });
-  //         req.models.errors.count({
-  //           'error_date': dates[property]
-  //         }, function(err, count) {
-  //           console.log('count' + count);
-  //           array[counter].count = count;
-  //         });
-  //         counter++;
-  //       }
-  //     }
-  //   }
-  //   if (counter === number) {
-  //     console.log('counter' + counter);
-  //     console.log(array);
-  //     res.json({
-  //       data: array
-  //     });
-  //   }
-  // });
+});
+
+app.post('/msgs', function(req, res){
+  req.models.users.get(req.session.login, function(err, user) {
+    req.models.errors.aggregate(['error_msg'], {token: user.token}).count().groupBy('error_msg').order('count', 'Z').limit(4).get(function(err, data) {
+      console.log('MESSAGES');
+      // console.log(data);
+        res.json({
+          error: data
+        });
+    })
+  });
+});
+
+app.post('/recent', function(req, res) {
+  var request = "";
+  if (!req.body.selectedIcon && !req.body.selectedPeriod) {
+    request = 'select errors.error_timestamp, errors.error_msg, errors.error_url, visitors.browser, visitors.OS from errors join visitors on errors.visitor_id = visitors.visitor_id order by errors.error_timestamp desc;'
+  } else if (req.body.selectedIcon && req.body.selectedPeriod) {
+    request = 'select errors.error_timestamp, errors.error_msg, errors.error_url, visitors.browser, visitors.OS from errors join visitors on errors.visitor_id = visitors.visitor_id  where errors.error_url = \"' + req.body.selectedIcon + '\" and errors.error_timestamp > now() - interval \"' + req.body.selectedPeriod + '\" hour order by errors.error_timestamp desc;';
+  } else if (req.body.selectedIcon) {
+    request = 'select errors.error_timestamp, errors.error_msg, errors.error_url, visitors.browser, visitors.OS from errors join visitors on errors.visitor_id = visitors.visitor_id  where errors.error_url = \"' + req.body.selectedIcon + '\" order by errors.error_timestamp desc;';
+  } else if (req.body.selectedPeriod) {
+    request = 'select errors.error_timestamp, errors.error_msg, errors.error_url, visitors.browser, visitors.OS from errors join visitors on errors.visitor_id = visitors.visitor_id  where errors.error_timestamp > now() - interval ' + req.body.selectedPeriod + ' hour order by errors.error_timestamp desc;';
+  }
+  console.log(request);
+  connection.query(request, function(err, rows, fields) {
+    if (err) {
+      console.log(err);
+    }
+    if ('undefined' != typeof(rows[0])) {
+      console.log('RECENT');
+      console.log(rows);
+      res.json(rows);
+    } else {
+      console.log('not found!');
+    }
+  });
+});
+
+app.post('/recentUrls', function(req, res){
+  connection.query('select distinct error_url from errors;', function(err, rows, fields) {
+      if (err) {
+        console.log(err);
+      }
+      if ('undefined' != typeof(rows[0])) {
+        console.log(rows);
+        res.json(rows);
+      }
+      else {
+        console.log('not found!');
+      }
+  });
+});
+
+app.post('/users', function(req, res){
+  console.log('icon');
+  console.log(req.body);
+  console.log(req.body.selectedIcon, req.body.selectedPeriod);
+  var request = "";
+  if (!req.body.selectedIcon && !req.body.selectedPeriod) {
+    request = 'select count(*), errors.visitor_id, visitors.timestamp, visitors.browser, visitors.browser_version, visitors.OS, visitors.OS_version, visitors.cookies, visitors.mobile, visitors.viewport from errors join visitors on errors.visitor_id = visitors.visitor_id group by visitor_id order by count(*) desc;';
+  } else if (req.body.selectedIcon && req.body.selectedPeriod) {
+    request = 'select count(*), errors.visitor_id, visitors.timestamp, visitors.browser, visitors.browser_version, visitors.OS, visitors.OS_version, visitors.cookies, visitors.mobile, visitors.viewport from errors join visitors on errors.visitor_id = visitors.visitor_id where errors.error_url = \"' + req.body.selectedIcon + '\" and errors.error_timestamp > now() - interval \"' + req.body.selectedPeriod + '\" hour group by visitor_id order by count(*) desc;';
+  } else if (req.body.selectedIcon) {
+    request = 'select count(*), errors.visitor_id, visitors.timestamp, visitors.browser, visitors.browser_version, visitors.OS, visitors.OS_version, visitors.cookies, visitors.mobile, visitors.viewport from errors join visitors on errors.visitor_id = visitors.visitor_id where errors.error_url = \"' + req.body.selectedIcon + '\" group by visitor_id order by count(*) desc;';
+  } else if (req.body.selectedPeriod) {
+    request = 'select count(*), errors.visitor_id, visitors.timestamp, visitors.browser, visitors.browser_version, visitors.OS, visitors.OS_version, visitors.cookies, visitors.mobile, visitors.viewport from errors join visitors on errors.visitor_id = visitors.visitor_id where errors.error_timestamp > now() - interval \"' + req.body.selectedPeriod + '\" hour group by visitor_id order by count(*) desc;';
+  }
+  connection.query(request, function(err, rows, fields) {
+      if (err) {
+        console.log(err);
+      }
+      if ('undefined' != typeof(rows[0])) {
+        console.log(rows);
+        res.json(rows);
+      }
+      else {
+        console.log('not found!');
+      }
+  });
+});
+
+app.post('/daily', function(req, res){
+  connection.query('select error_date, count(*) from errors group by error_date order by count(*) desc;', function(err, rows, fields) {
+      if (err) {
+        console.log(err);
+      }
+      if ('undefined' != typeof(rows[0])) {
+        console.log(rows);
+        res.json(rows);
+      }
+      else {
+        console.log('not found!');
+      }
+  });
 });
 
 server = app.listen(server_port, function() {

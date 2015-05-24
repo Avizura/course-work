@@ -1,8 +1,6 @@
 <div class="auth-container">
   <div class="auth-text">{Track.js}</div>
   <button class="auth-btn" ng-click="start()" ng-show="!clicked">Sign In</button>
-  <!-- <button ng-show="clicked" class="animate-show auth-btn">Password</button> -->
-
   <form class="form-5 animate-show clearfix" ng-show="clicked">
     <div class="clearfix">
       <div class="input-bar">
@@ -13,6 +11,9 @@
         <i class="icon-arrow-right"></i>
         <span>Sign in</span>
       </button>
+    </div>
+    <div class="sign-error" ng-show="error">
+      <strong>Incorrect login or password!</strong>
     </div>
     <div class="sign-container" ng-click="signUp()">
       <div>Haven't got account yet?

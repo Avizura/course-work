@@ -13,8 +13,14 @@ h1, h2, h3, h4 {
   margin: 10px !important;
   text-align: center;
 }
-table{
+table {
   color: black;
+  margin-bottom: 0 !important;
+}
+.clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
 }
 .home-container {
   position: absolute;
@@ -68,6 +74,10 @@ table{
   background-color: #fff;
   margin: 0;
 }
+.sign-error {
+  color: red;
+  margin: 10px;
+}
 img {
   vertical-align: middle;
 }
@@ -92,9 +102,6 @@ login {
   height: 50px;
   max-width: 300px;
   padding: 0 10px 0 10px;
-  /*position: absolute;*/
-  /*right: 0;*/
-  /*top: 0;*/
 }
 .user-login {
   color: black;
@@ -113,7 +120,7 @@ login {
 }
 .dropdown-menu {
   width: 200px;
-  top: 50px !important;
+  /*top: 50px !important;*/
 }
 .animate-show {
   opacity: 1;
@@ -149,31 +156,32 @@ login {
   display: block;
   line-height: 30px;
 }
-.chart-container{
+.chart-container {
   display: inline-block;
   position: relative;
   left: 50%;
   transform: translateX(-50%);
 }
-.chart{
+.chart {
   float: left;
 }
-.top-statistic{
+.top-statistic {
   display: inline-block;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
 }
-.tops{
+.tops {
   width: 320px;
-  height: 200px;
   display: inline-block;
-  border: 1px solid black;
+  border: 1px solid #ddd;
   margin: 10px;
 }
 .tops-table {
-  table-layout: fixed;
   width: 100%;
   white-space: nowrap;
   padding: 5px;
-  font-size: 10px;
+  font-size: 14px;
 }
 .tops-table td, .tops-table th {
   white-space: nowrap;
@@ -181,11 +189,75 @@ login {
   text-overflow: ellipsis;
   /*text-align: center;*/
 }
-.row-1{
-  width: 84%;
+.tops-table td, .tops-table th {
   text-align: left;
 }
-.row-2{
-  width: 16%;
+.tops-table td + td, .tops-table th + th {
   text-align: right;
+}
+.table-header {
+  float: left;
+}
+.btn-prev, .btn-next {
+  width: 100px;
+  height: 30px;
+  margin: 15px 0 10px 0;
+  background-color: #e93b27;
+  display: inline-block;
+  text-align: center;
+  font-size: 14px;
+  color: white;
+  outline: none;
+}
+.recent-table td, .recent-table th {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+#charts-view {
+  overflow: auto;
+  height: 90%;
+}
+.mydropdown {
+  color: black;
+  font-size: 18px;
+  border: none;
+  /*line-height: 66px;*/
+
+  background-color: white;
+}
+.filter-tools {
+  /*float: right;*/
+  position: absolute;
+  right: 37px;
+}
+.domain-filter {
+  float: left;
+}
+.date-filter {
+  float: right;
+}
+.domain-filter .select {
+  width: 400px;
+}
+.date-filter .select {
+  width: 100px;
+}
+
+[ui-view].ng-enter, [ui-view].ng-leave {
+  -webkit-transition: all .5s ease-in-out;
+  transition: all .5s ease-in-out;
+}
+[ui-view].ng-enter {
+  opacity: 0;
+}
+[ui-view].ng-enter-active {
+  opacity: 1;
+}
+[ui-view].ng-leave {
+  opacity: 1;
+}
+[ui-view].ng-leave-active {
+  opacity: 0;
 }

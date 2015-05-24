@@ -7,6 +7,10 @@ var hits = function(app) {
           type: 'text',
           key: true
         },
+        hit_date: {
+          type: 'text',
+          key: true
+        },
         count: Number
       });
       next();

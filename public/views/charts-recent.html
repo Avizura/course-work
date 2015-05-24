@@ -1,0 +1,31 @@
+<div>
+  <h2 class="table-header clearfix">
+    <strong>
+      <span class="glyphicon glyphicon-time" aria-hidden="true"></span>&nbsp Recent</strong>
+    <small>&nbsp (Showing recent errors)</small>
+  </h2>
+  <!-- <div class="paging-btn-group">
+    <button class="btn-prev">Previous</button>
+    <button class="btn-next">Next</button>
+  </div> -->
+  <table class="table table-striped table-bordered table-link table-hover recent-errors">
+    <thead>
+      <tr>
+        <th>Timestamp</th>
+        <th>Message</th>
+        <th>Url</th>
+        <th>Browser</th>
+        <th>OS</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="item in recent | slice:page*itemsPerPage:page*itemsPerPage+itemsPerPage">
+        <td>{{item.error_timestamp}}</td>
+        <td>{{item.error_msg}}</td>
+        <td>{{item.error_url}}</td>
+        <td>{{item.browser}}</td>
+        <td>{{item.OS}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

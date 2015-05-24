@@ -1,6 +1,7 @@
 <div class="auth-container">
   <div class="auth-text">{Track.js}</div>
   <form class="form-5 clearfix animate-show">
+    <div class="clearfix">
     <p class="input-bar">
       <input type="text" name="login" placeholder="Username" ng-model="user.login">
       <input type="password" name="password" placeholder="Password" ng-model="user.password">
@@ -10,6 +11,10 @@
       <i class="icon-arrow-right"></i>
       <span>Sign in</span>
     </button>
+  </div>
+    <div class="sign-error" ng-show="error">
+      <strong>This login or email is already taken!</strong>
+    </div>
     <div class="sign-container" ng-click="signIn()">
       <div>Already have an account?
         <p></p><b>Sign in!</b> </div>

@@ -8,7 +8,8 @@ function errorHandler(req, res) {
       error_line: req.body.line,
       error_column: req.body.column,
       token: req.body.token,
-      visitor_id: req.ip
+      visitor_id: req.ip,
+      error_date: new Date().toLocaleDateString("ru") //magic
     },
     function(err, items) {
       console.log(err);

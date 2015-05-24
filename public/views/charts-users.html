@@ -1,0 +1,35 @@
+<h2 class="table-header clearfix">
+  <strong>
+    <span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp Users</strong>
+  <small>&nbsp (Errors Grouped by User ID)</small>
+</h2>
+<!-- <div class="paging-btn-group">
+  <button class="btn-prev">Previous</button>
+  <button class="btn-next">Next</button>
+</div> -->
+<table class="table table-striped table-bordered table-link table-hover recent-errors">
+  <thead>
+    <tr>
+      <th>Errors</th>
+      <th>Ip</th>
+      <th>First Seen</th>
+      <th>Browser</th>
+      <th>OS</th>
+      <th>Cookies</th>
+      <th>Mobile</th>
+      <th>Viewport</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="item in users | slice:page*itemsPerPage:page*itemsPerPage+itemsPerPage">
+      <td>{{item['count(*)']}}</td>
+      <td>{{item.visitor_id}}</td>
+      <td>{{item.timestamp}}</td>
+      <td>{{item.browser}} {{item.browser_version}}</td>
+      <td>{{item.OS}} {{item.OS_version}}</td>
+      <td>{{item.cookies}}</td>
+      <td>{{item.mobile}}</td>
+      <td>{{item.viewport}}</td>
+    </tr>
+  </tbody>
+</table>

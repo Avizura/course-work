@@ -1,11 +1,15 @@
 var request = new XMLHttpRequest();
 var token = document.querySelector('script[token]').getAttribute('token');
+var serverAddress = 'http://192.168.0.168:5000';
 console.log(token);
 
-(function hit(_token){
-  request.open('POST', 'http://192.168.0.168:5000/hit', true);
+(function hit(_token) {
+  request.open('POST', serverAddress + '/hit', true);
   request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  request.send(toUrlEncoded({token: _token}));
+  request.send(toUrlEncoded({
+    token: _token,
+    date: new Date().toLocaleDateString('ru')
+  }));
 })(token)
 
 function toUrlEncoded(obj) {
@@ -30,18 +34,18 @@ window.onerror = function(msg, url, line, column, err) {
     token: token
   };
   request.onreadystatechange = function() {
-      if (request.readyState == 4 && request.status == 200) {
-        console.log(request.responseText);
-        if (request.responseText === 'false') {
-          var visitor = clientInfo(window);
-          console.log(visitor);
-          request.open('POST', 'http://192.168.0.168:5000/visitor', true);
-          request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-          request.send(toUrlEncoded(visitor));
-        }
+    if (request.readyState == 4 && request.status == 200) {
+      console.log(request.responseText);
+      if (request.responseText === 'false') {
+        var visitor = clientInfo(window);
+        console.log(visitor);
+        request.open('POST', serverAddress + '/visitor', true);
+        request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        request.send(toUrlEncoded(visitor));
       }
     }
-  request.open('POST', 'http://192.168.0.168:5000/error', true);
+  }
+  request.open('POST', serverAddress + '/error', true);
   request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   request.send(toUrlEncoded(error));
 
@@ -54,7 +58,7 @@ window.onevent = function(name, url, tag) {
     token: token,
     tag: tag
   };
-  request.open('POST', 'http://192.168.0.168:5000/event', true);
+  request.open('POST', serverAddress + '/event', true);
   request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   request.send(toUrlEncoded(_event));
 }

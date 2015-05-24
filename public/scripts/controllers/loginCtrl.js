@@ -1,36 +1,40 @@
 angular.module('myApp')
-  .controller('loginCtrl', function($scope, $http, $state, isAuth) {
+  .controller('loginCtrl', function($scope, $http, $state, config, isAuth) {
     $scope.user = {
       login: "",
       password: "",
       email: ""
     };
+    $scope.error = false;
     $scope.login = function() {
-      $http.post("http://192.168.0.168:5000/user/login", $scope.user)
+      $scope.error = false;
+      $http.post(config.serverAddress + '/user/login', $scope.user)
         .success(function(data) {
           isAuth.value = data.isAuth;
-          if (data.isAuth) {//Если введены верные данные
+          if (data.isAuth) { //Если введены верные данные
             isAuth.login = data.login;
-            $state.go('navbar.charts');
+            $state.go('navbar.charts.dashboard');
           } else {
             console.log('Wrong login data!');
             isAuth.login = '';
+            $scope.error = true;
           }
         })
+        .error(function(data, status, headers, config) {});
     };
     $scope.logout = function() {
-      $http.post("http://192.168.0.168:5000/user/logout")
+      $http.post(config.serverAddress + '/user/logout')
         .success(function(data) {
-            isAuth.value = false;
-            isAuth.login = '';
-            $state.go('home');
-            console.log(data);
+          isAuth.value = false;
+          isAuth.login = '';
+          $state.go('home');
+          console.log(data);
         })
     };
-    $scope.start = function(){
+    $scope.start = function() {
       $scope.clicked = true;
     };
-    $scope.signUp = function(){
+    $scope.signUp = function() {
       $state.go('registration');
     };
   })

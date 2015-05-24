@@ -4,7 +4,7 @@ angular.module('myApp')
       html: true
     });
   })
-  .controller('navbarCtrl', function($scope, $http, $state, $sce, isAuth) {
+  .controller('navbarCtrl', function($scope, $http, $state, $sce, config, isAuth) {
     $scope.dropdown = [{
       "text": $sce.trustAsHtml("<span class = \"glyphicon glyphicon-cog\"></span>&nbsp Account"),
       "href": '#anotherAction'
@@ -21,7 +21,7 @@ angular.module('myApp')
       "click": 'logout()'
     }];
     $scope.logout = function() {
-      $http.post("http://192.168.0.168:5000/user/logout")
+      $http.post(config.serverAddress+'/user/logout')
         .success(function(data) {
           isAuth.value = false;
           isAuth.login = '';

@@ -13,9 +13,23 @@ var errors = function(app) {
         error_column: Number,
         error_timestamp: String,
         token: String,
-        visitor_id: Number,
-        error_date: String
+        error_date: String,
+        visitor_id: String
       });
+
+      // models.visitors = db.define("visitors", {
+      //   visitor_ip: String,
+      //   timestamp: Number,
+      //   browser: String,
+      //   browser_version: String,
+      //   OS: String,
+      //   OS_version: String,
+      //   mobile: String,
+      //   cookies: String,
+      //   flash_version: String,
+      //   viewport: String
+      // });
+      // models.errors.hasOne('visitor', models.visitors);
       next();
     }
   }));
