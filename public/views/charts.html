@@ -36,10 +36,11 @@
       </ul>
     </div>
   </nav>
+
   <div id="page-wrapper">
     <div class="container-fluid">
       <div class="filter-tools">
-        <h4 class="domain-filter">
+        <h4 class="domain-filter" ng-show='getState()'>
           <strong>Domain:</strong>
           <button type="button" class="btn btn-default domain-select" ng-model="selectedIcon" placement="auto" bs-options="icon.value as icon.label for icon in icons" bs-select>
             <span class="caret"></span>

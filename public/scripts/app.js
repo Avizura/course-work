@@ -8,6 +8,10 @@ angular.module('myApp', ['ui.router', 'ngAnimate', 'mgcrea.ngStrap', 'highcharts
         templateUrl: 'views/home.html',
         controller: 'homeCtrl'
       })
+      .state('about', {
+        url: '/about',
+        templateUrl: 'views/about.html'
+      })
       .state('login', {
         url: '/user/login',
         templateUrl: 'views/login.html',

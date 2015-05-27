@@ -5,6 +5,9 @@ angular.module('myApp')
     });
   })
   .controller('navbarCtrl', function($scope, $http, $state, $sce, config, isAuth) {
+    $scope.login = isAuth.login;
+    $scope.feedback = false;
+    $scope.feedbackType = 'Feedback';
     $scope.dropdown = [{
       "text": $sce.trustAsHtml("<span class = \"glyphicon glyphicon-cog\"></span>&nbsp Account"),
       "href": '#anotherAction'
@@ -21,13 +24,34 @@ angular.module('myApp')
       "click": 'logout()'
     }];
     $scope.logout = function() {
-      $http.post(config.serverAddress+'/user/logout')
-        .success(function(data) {
+      $http.post(config.serverAddress + '/user/logout')
+        .success(function(data, status, headers, config) {
           isAuth.value = false;
           isAuth.login = '';
           $state.go('home');
           console.log(data);
-        })
+        });
     };
-    $scope.login = isAuth.login;
+    $scope.feedbackClick = function() {
+      $scope.feedback = !$scope.feedback;
+      console.log('feedback');
+      console.log($scope.feedback);
+    };
+    $scope.feedbackSubmit = function() {
+      console.log($scope.feedbackType);
+      console.log($scope.text);
+      $http.post(config.serverAddress + '/feedback', {
+        feedbackType: $scope.feedbackType,
+        text: $scope.text
+      });
+      $scope.feedback = false;
+    };
+    $scope.feedbackCancel = function() {
+      $scope.feedback = false;
+    };
+    $scope.feedbackTypes = [{
+      name: 'Feedback'
+    }, {
+      name: 'Support Request'
+    }];
   });

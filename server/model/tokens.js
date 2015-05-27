@@ -3,11 +3,11 @@ var tokens = function(app) {
   app.use(orm.express("mysql://root:prosport@localhost/track_db", {
     define: function(db, models, next) {
       models.tokens = db.define("tokens", {
-        token: {
+        login: {
           type: 'text',
           key: true
         },
-        login: String
+        token: String
       });
       next();
     }

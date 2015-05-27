@@ -73,6 +73,7 @@ var events = require('./server/model/events.js')(app);
 var visitors = require('./server/model/visitors.js')(app);
 var sessions = require('./server/model/sessions.js')(app);
 var hits = require('./server/model/hits.js')(app);
+var feedback = require('./server/model/feedback.js')(app);
 
 //Error handling
 app.use(function(err, req, res, next) {
@@ -88,7 +89,6 @@ app.use(function(err, req, res, next) {
 })();
 
 app.post('/visitor', function(req, res) {
-  //console.log(req.body);
   req.models.visitors.create({
       visitor_id: req.ip,
       browser: req.body.browser,
@@ -101,7 +101,7 @@ app.post('/visitor', function(req, res) {
       viewport: req.body.viewport
     },
     function(err, items) {
-      //console.log(err);
+      console.log(err);
     });
   res.end('Object Visitor created successfully!');
 });
@@ -116,24 +116,25 @@ app.post('/isAuth', function(req, res) {
 });
 
 app.post('/hit', function(req, res) {
-  var mydate = new Date().toLocaleDateString('ru');
-  req.models.hits.find({token: req.body.token, hit_date: mydate}, function(err, hits) {
-    console.log('hits');
-    console.log(hits);
+  var curDate = new Date().toISOString().substring(0, 10);
+  req.models.hits.find({
+    token: req.body.token,
+    hit_date: curDate
+  }, function(err, hits) {
+    console.log('new hits');
+    console.log(err, hits);
     if (hits[0]) {
       hits[0].count++;
       hits[0].save(function(err) {
         console.log('saved!!');
         console.log(err);
       });
-    }
-    else{
+    } else {
       console.log('hits false');
-      var mydate = new Date().toLocaleDateString('ru');
-      console.log('mydate ' + mydate);
+      console.log('curDate ' + curDate);
       req.models.hits.create({
           token: req.body.token,
-          hit_date: mydate,
+          hit_date: curDate,
           count: 1
         },
         function(err, items) {
@@ -144,11 +145,10 @@ app.post('/hit', function(req, res) {
   res.end();
 });
 
-app.post('/hits', function(req, res) {
-  var errorsCount = "";
+app.post('/hitsAndErrors', function(req, res) {
+  var errorsCount = 0;
   var hitsCount = 0;
-  // var curDate =  new Date().toLocaleDateString('ru');
-  req.models.users.get(req.session.login, function(err, user) {
+  req.models.tokens.get(req.session.login, function(err, user) {
     req.models.hits.find({
       token: user.token
     }, function(err, hits) {
@@ -160,11 +160,7 @@ app.post('/hits', function(req, res) {
         }
         console.log(hitsCount);
         req.models.errors.count('error_id', function(err, count) {
-          //console.log('count ' + count);
           errorsCount = count;
-          //console.log('HOLYFUCK');
-          //console.log(hitsCount);
-          //console.log(errorsCount);
           res.json({
             hits: hitsCount,
             errors: errorsCount
@@ -175,28 +171,84 @@ app.post('/hits', function(req, res) {
   });
 });
 
-app.post('/timeline', function(req, res) {
-  req.models.users.get(req.session.login, function(err, user) {
-    req.models.errors.aggregate(['error_date'], {token: user.token}).count().groupBy('error_date').order('error_date', 'Z').limit(6).get(function(err, errors) {
-      req.models.hits.find({token: user.token}, ['hit_date', 'Z'], {limit: 6}, function(err, hits) {
-        console.log('HITS DATA NOW!');
-        console.log(hits);
-        console.log('HALELUYA');
-        console.log(errors);
-        res.json({
-          errors: errors,
-          hits: hits
+app.post('/pieChart', function(req, res) {
+  var hitsCount = 0;
+  req.models.tokens.get(req.session.login, function(err, user) {
+    connection.query('select count from hits where token = \"' + user.token + '\" and hit_date > curdate() - interval \"' + req.body.selectedPeriod + '\" hour;', function(err, rows, fields) {
+      if (err) {
+        console.log(err);
+      }
+      if ('undefined' != typeof(rows[0])) {
+        console.log('PIECHART');
+        console.log(rows);
+        for (var i = 0; i < rows.length; ++i) {
+          hitsCount += rows[i].count;
+        }
+        connection.query('select count(*) from errors where token = \"' + user.token + '\" and error_timestamp > curdate() - interval \"' + req.body.selectedPeriod + '\" hour;', function(err, rows, fields) {
+          if (err) {
+            console.log(err);
+          }
+          if ('undefined' != typeof(rows[0])) {
+            res.json({
+              hits: hitsCount,
+              errors: rows[0]['count(*)']
+            });
+          } else {
+            console.log('error count not found!');
+          }
         });
-      });
+      } else {
+        console.log('hits count not found!');
+      }
     });
   });
 });
 
+app.post('/areaChart', function(req, res){
+  var request = "";
+  if(!req.body.selectedPeriod){
+    request = 'select count(*), hits.hit_date, hits.count from errors join hits on date(errors.error_timestamp) = hits.hit_date and errors.token = hits.token group by hit_date order by hit_date limit 6;';
+  }
+  else {
+    request = 'select count(*), hits.hit_date, hits.count from errors join hits on date(errors.error_timestamp) = hits.hit_date and errors.token = hits.token where hits.hit_date > curdate() - interval \"' + req.body.selectedPeriod + '\" hour group by hit_date order by hit_date limit 6;';
+  }
+  connection.query(request, function(err, rows, fields) {
+    if (err) {
+      console.log(err);
+    }
+    if ('undefined' != typeof(rows[0])) {
+      for (var i = 0; i < rows.length; ++i) {
+        rows[i]['hit_date'] = new Date(rows[i]['hit_date']).toLocaleDateString('ru');
+      }
+      console.log(rows);
+      res.json({
+        data: rows
+      });
+    } else {
+      console.log('error count not found!');
+      res.json();
+    }
+  });
+});
+
+// app.post('/timeline', function(req, res) {
+//   req.models.tokens.get(req.session.login, function(err, user) {
+//     req.models.errors.aggregate(['error_date'], {token: user.token}).count().groupBy('error_date').order('error_date', 'Z').limit(6).get(function(err, errors) {
+//       req.models.hits.find({token: user.token}, ['hit_date', 'Z'], {limit: 6}, function(err, hits) {
+//         res.json({
+//           errors: errors,
+//           hits: hits
+//         });
+//       });
+//     });
+//   });
+// });
+
 app.post('/browsers', function(req, res) {
-  req.models.tokens.find({login: req.session.login}, function(err, data) {
+  req.models.tokens.get(req.session.login, function(err, data) {
     console.log('TOKEN');
     console.log(data);
-    connection.query('select visitors.browser, count(*) from errors join visitors on errors.visitor_id = visitors.visitor_id where errors.token = \"' + data[0].token + '\" group by errors.visitor_id order by count(*) desc limit 4;', function(err, rows, fields) {
+    connection.query('select visitors.browser, count(*) from errors join visitors on errors.visitor_id = visitors.visitor_id where errors.token = \"' + data.token + '\" group by errors.visitor_id order by count(*) desc limit 4;', function(err, rows, fields) {
       if (err) {
         console.log(err);
       }
@@ -205,13 +257,14 @@ app.post('/browsers', function(req, res) {
         res.json(rows);
       } else {
         console.log('not found!');
+        res.json();
       }
     });
   });
 });
 
 app.post('/urls', function(req, res){
-  req.models.users.get(req.session.login, function(err, user) {
+  req.models.tokens.get(req.session.login, function(err, user) {
     req.models.errors.aggregate(['error_url'], {token: user.token}).count().groupBy('error_url').order('count', 'Z').limit(4).get(function(err, data) {
       console.log('URLS');
       // console.log(data);
@@ -223,7 +276,7 @@ app.post('/urls', function(req, res){
 });
 
 app.post('/msgs', function(req, res){
-  req.models.users.get(req.session.login, function(err, user) {
+  req.models.tokens.get(req.session.login, function(err, user) {
     req.models.errors.aggregate(['error_msg'], {token: user.token}).count().groupBy('error_msg').order('count', 'Z').limit(4).get(function(err, data) {
       console.log('MESSAGES');
       // console.log(data);
@@ -256,6 +309,7 @@ app.post('/recent', function(req, res) {
       res.json(rows);
     } else {
       console.log('not found!');
+      res.json();
     }
   });
 });
@@ -271,6 +325,7 @@ app.post('/recentUrls', function(req, res){
       }
       else {
         console.log('not found!');
+        res.json();
       }
   });
 });
@@ -299,23 +354,40 @@ app.post('/users', function(req, res){
       }
       else {
         console.log('not found!');
+        res.json();
       }
   });
 });
 
-app.post('/daily', function(req, res){
-  connection.query('select error_date, count(*) from errors group by error_date order by count(*) desc;', function(err, rows, fields) {
-      if (err) {
-        console.log(err);
+app.post('/daily', function(req, res) {
+  connection.query('select date(error_timestamp), count(*) from errors group by date(error_timestamp) order by date(error_timestamp) desc;', function(err, rows, fields) {
+    if (err) {
+      console.log(err);
+    }
+    if ('undefined' != typeof(rows[0])) {
+      for (var i = 0; i < rows.length; ++i) {
+        rows[i]['date(error_timestamp)'] = new Date(rows[i]['date(error_timestamp)']).toDateString();
       }
-      if ('undefined' != typeof(rows[0])) {
-        console.log(rows);
-        res.json(rows);
-      }
-      else {
-        console.log('not found!');
-      }
+      console.log(rows);
+      res.json(rows);
+    } else {
+      console.log('not found!');
+      res.json();
+    }
   });
+});
+
+app.post('/feedback', function(req, res){
+  console.log(req.body);
+  req.models.feedback.create({
+      login: req.session.login,
+      feedback_type: req.body.feedbackType,
+      text: req.body.text
+    },
+    function(err, items) {
+      console.log(err);
+      res.end();
+    });
 });
 
 server = app.listen(server_port, function() {

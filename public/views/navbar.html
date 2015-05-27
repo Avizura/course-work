@@ -1,21 +1,41 @@
-<nav class="navbar navbar-inverse navbar-fixed-top">
-  <div class="navbar-header">
-    <a class="navbar-brand" ui-sref="home">{Track:js}</a>
-  </div>
-  <div class='user-container' data-animation='am-flip-x' bs-dropdown='dropdown' placement='bottom-right' container='.user-container'>
-    <login></login>
-    <img alt="user-avatar" class="user-avatar" src="images/avatar.gif">
-  </div>
-  <div class="collapse navbar-collapse navbar-ex1-collapse">
-    <ul class="nav navbar-nav">
-      <li ng-class="{'active': $state.current.name.indexOf('home') >= 0}"><a ui-sref='home'>Home</a>
+<div class="blackout" ng-show=feedback>
+</div>
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-header">
+      <a class="navbar-brand" ui-sref="home" style="font-size: x-large">{Track:js}</a>
+    </div>
+    <div class='user-container' data-animation='am-flip-x' bs-dropdown='dropdown' placement='bottom-right' container='.user-container'>
+      <login></login>
+      <img alt="user-avatar" class="user-avatar" src="images/avatar.gif">
+    </div>
+    <div class="collapse navbar-collapse navbar-ex1-collapse">
+      <ul class="nav navbar-nav">
+        <li ng-class="{'active': $state.current.name.indexOf('home') >= 0}"><a ui-sref='about'>About</a>
+        </li>
+        <li ng-class="{'active': $state.current.name.indexOf('charts') >= 0}"><a ui-sref='charts'>Charts</a>
+        </li>
+        <li ng-class="{'active': $state.current.name.indexOf('test') >= 0}"><a ui-sref='' ng-click='feedbackClick()'>Feedback</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <form name="myForm" method="post" class="feedback-form" ng-show=feedback>
+    <ul id='feedback-elements'>
+      <li>
+        <h3 id='feedback-header'>We want to hear from you!</h3>
       </li>
-      <li ng-class="{'active': $state.current.name.indexOf('charts') >= 0}"><a ui-sref='charts'>Charts</a>
+      <li>
+        <label for="msg">Message type:</label>
+        <select name="msg" ng-model="feedbackType" ng-options="feedback.name as feedback.name for feedback in feedbackTypes" required>
+        </select>
       </li>
-      <li ng-class="{'active': $state.current.name.indexOf('test') >= 0}"><a ui-sref='test'>Feedback</a>
+      <li>
+        <textarea name="feedback-message" id="feedback-msg" cols="30" rows="6" placeholder="Write your comment here..." ng-model='text' required></textarea>
+      </li>
+      <li>
+        <buton type="submit" id="submit" ng-click='feedbackSubmit()'>Submit</buton>
+        <buton id="cancel" ng-click='feedbackCancel()'>Cancel</buton>
       </li>
     </ul>
-  </div>
-
-</nav>
-<ui-view></ui-view>
+  </form>
+  <ui-view></ui-view>

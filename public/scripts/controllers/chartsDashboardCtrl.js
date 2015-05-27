@@ -1,74 +1,118 @@
 angular.module('myApp')
   .controller('chartsDashboardCtrl', function($scope, $http, config) {
     $scope.exist = true;
-    //request for hits and errors data
-    $http.post(config.serverAddress + '/hits')
-      .success(function(data, status, headers, config) {
-        console.log('Check hits!');
-        console.log(data);
-        if (!data.hits) {
-          console.log('EMPTY!');
-          $scope.exist = false;
-        }
-        $scope.chartPieConfig.series[0].data[0] = {
-          name: 'Hits',
-          y: data.hits,
-          color: '#1C75EA'
-        };
-        $scope.chartPieConfig.series[0].data[1] = {
-          name: 'Errors',
-          y: data.errors,
-          color: 'red'
-        };
-      })
-      .error(function(data, status, headers, config) {
-        console.log(data);
-      });
-
-    //request for errors timestamps
-    $http.post(config.serverAddress + '/timeline')
-      .success(function(object, status, headers, config) {
-        console.log('TIMELINE DATA!');
-        console.log(object);
-        console.log(object.errors);
-        for (i = 0, j = object.errors.length - 1; i < object.errors.length; ++i, --j) {
-          $scope.chartAreaConfig.options.xAxis.categories[i] = new Date(object.errors[j].error_date).toLocaleDateString("ru");
-          $scope.chartAreaConfig.series[0].data[i] = {
-            y: object.errors[j].count
-              // color: 'red'
+    //request for pieChart data
+    $scope.pieChartReq = function(filter) {
+      $http.post(config.serverAddress + '/hitsAndErrors', filter)
+        .success(function(data, status, headers, config) {
+          console.log('Check hits!');
+          console.log(data);
+          if (!data.hits) {
+            console.log('EMPTY!');
+            $scope.exist = false;
+          }
+          $scope.chartPieConfig.series[0].data[0] = {
+            name: 'Hits',
+            y: data.hits,
+            color: '#1C75EA'
           };
-          $scope.chartAreaConfig.series[1].data[i] = object.hits[j].count;
-          console.log($scope.chartAreaConfig.options.xAxis.categories[i]);
-        }
+          $scope.chartPieConfig.series[0].data[1] = {
+            name: 'Errors',
+            y: data.errors,
+            color: 'red'
+          };
+        })
+        .error(function(data, status, headers, config) {
+          console.log(data);
+        });
+    };
+    $scope.pieChartReq();
+    //request for areaChart data
+    $scope.areaChartReq = function(filter) {
+      $http.post(config.serverAddress + '/areaChart', filter)
+        .success(function(object, status, headers, config) {
+          console.log('TIMELINE DATA!');
+          console.log(object);
+          if (object) {
+            $scope.exist = true;
+            $scope.chartAreaConfig.options.xAxis.categories.length = 0;
+            $scope.chartAreaConfig.series[0].data.length = 0;
+            $scope.chartAreaConfig.series[1].data.length = 0;
+            for (i = 0; i < object.data.length; ++i) {
+              $scope.chartAreaConfig.options.xAxis.categories[i] = object.data[i]['hit_date'];
+              $scope.chartAreaConfig.series[0].data[i] = {
+                y: object.data[i]['count(*)']
+              };
+              $scope.chartAreaConfig.series[1].data[i] = object.data[i].count;
+            }
+          }
+          else {
+            $scope.exist = false;
+          }
+        })
+        .error(function(data, status, headers, config) {});
+    }
+    $scope.areaChartReq();
+    $scope.$watch('selectedPeriod', function() {
+      $scope.areaChartReq({
+        selectedPeriod: $scope.selectedPeriod
+      });
+      if (!$scope.selectedPeriod) {
+        $scope.pieChartReq();
+      } else {
+        $http.post(config.serverAddress + '/pieChart', {
+            selectedPeriod: $scope.selectedPeriod
+          })
+          .success(function(data, status, headers, config) {
+            console.log('Check hits!');
+            console.log(data);
+            if (!data.hits) {
+              console.log('EMPTY!');
+              $scope.exist = false;
+            }
+            $scope.chartPieConfig.series[0].data[0] = {
+              name: 'Hits',
+              y: data.hits,
+              color: '#1C75EA'
+            };
+            $scope.chartPieConfig.series[0].data[1] = {
+              name: 'Errors',
+              y: data.errors,
+              color: 'red'
+            };
+          })
+          .error(function(data, status, headers, config) {
+            console.log(data);
+          });
+      }
+    });
+
+    //request for top browsers/errors
+    $http.post(config.serverAddress + '/browsers')
+      .success(function(data, status, headers, config) {
+        console.log('BROWSERS');
+        console.log(data);
+        $scope.topBrowsers = data;
       })
       .error(function(data, status, headers, config) {});
 
-      //request for top browsers/errors
-      $http.post(config.serverAddress + '/browsers')
-        .success(function(data, status, headers, config) {
-          console.log('BROWSERS');
-          console.log(data);
-          $scope.topBrowsers = data;
-        })
-        .error(function(data, status, headers, config) {});
+    //request for top urls/errors
+    $http.post(config.serverAddress + '/urls')
+      .success(function(data, status, headers, config) {
+        console.log('URLS');
+        console.log(data);
+        $scope.topUrls = data;
+      })
+      .error(function(data, status, headers, config) {});
 
-      //request for top urls/errors
-      $http.post(config.serverAddress + '/urls')
-        .success(function(data, status, headers, config) {
-          console.log('URLS');
-          console.log(data);
-          $scope.topUrls = data;
-        })
-        .error(function(data, status, headers, config) {});
-
-        //request for top messages/errors
-        $http.post(config.serverAddress + '/msgs')
-          .success(function(data, status, headers, config) {
-            console.log('MSGS');
-            console.log(data);
-            $scope.topMsgs = data;
-          })
-          .error(function(data, status, headers, config) {});
+    //request for top messages/errors
+    $http.post(config.serverAddress + '/msgs')
+      .success(function(data, status, headers, config) {
+        console.log('MSGS');
+        console.log(data);
+        $scope.topMsgs = data;
+      })
+      .error(function(data, status, headers, config) {});
 
     //This is not a highcharts object. It just looks a little like one!
     $scope.chartPieConfig = {

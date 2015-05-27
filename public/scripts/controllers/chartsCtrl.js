@@ -1,6 +1,13 @@
 angular.module('myApp')
   .controller('chartsCtrl', function($scope, $state, $http, config) {
     $scope.clicked = true;
+
+    $scope.getState = function() {
+      if ($state.current.name === 'navbar.charts.dashboard')
+        return false;
+      else return true;
+    }
+
     $scope.chartsData = false;
     $http.post(config.serverAddress + '/recentUrls')
       .success(function(urls, status, headers, config) {
