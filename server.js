@@ -514,3 +514,9 @@ app.post('/feedback', function(req, res) {
 server = app.listen(server_port, function() {
   console.log("Listening on port " + server_port);
 });
+
+app.post('/mytest', function(req, res){
+  console.log(req.body);
+  console.log("AVIZURA AAA");
+  res.end();
+})
