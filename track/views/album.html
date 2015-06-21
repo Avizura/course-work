@@ -1,0 +1,26 @@
+<div class="container my-container">
+  <header class='album-header'>
+    <h1 class='text'>An inspirational collection of screenshots</h1>
+  </header>
+  <div class="content">
+    <div class="grid clearfix">
+      <figure class="effect-apollo" ng-repeat="item in images | slice:page*itemsPerPage:page*itemsPerPage+itemsPerPage">
+        <img ng-src="{{item.url}}" alt="img2" />
+        <figcaption>
+          <h2>Arena
+            <span>Tournament</span>
+          </h2>
+          <p>Where the challenge beggins</p>
+        </figcaption>
+      </figure>
+    </div>
+    <div>
+      <a ng-click="prev()" class='prev'>
+        <span class="prev-white">
+      </a>
+      <a ng-click="next()" class='next'>
+      <span class="next-white">
+    </a>
+    </div>
+  </div>
+</div>

@@ -10,25 +10,28 @@ angular.module('myApp')
     $scope.feedbackType = 'Feedback';
     $scope.dropdown = [{
       "text": $sce.trustAsHtml("<span class = \"glyphicon glyphicon-cog\"></span>&nbsp Account"),
-      "href": '#anotherAction'
+      "click": 'Alert()'
     }, {
       "text": $sce.trustAsHtml("<span class = \"glyphicon glyphicon-upload\"></span>&nbsp Upgrade"),
       "href": '#anotherAction'
     }, {
       "text": $sce.trustAsHtml("<span class = \"glyphicon glyphicon-book\"></span>&nbsp Docs"),
-      "href": '#anotherAction'
+      "href": 'about'
     }, {
       divider: true
     }, {
       "text": $sce.trustAsHtml("<span class = \"glyphicon glyphicon-log-out\"></span>&nbsp Sign out"),
       "click": 'logout()'
     }];
+    $scope.Alert = function(){
+      alert('Your token is:');
+    };
     $scope.logout = function() {
       $http.post(config.serverAddress + '/user/logout')
         .success(function(data, status, headers, config) {
           isAuth.value = false;
           isAuth.login = '';
-          $state.go('home');
+          $state.go('login');
           console.log(data);
         });
     };

@@ -1,0 +1,59 @@
+<div class="container my-container">
+  <h1> Feedback </h1>
+  <h3> Use the form below to send us your comments! </h3>
+  <form name="myForm" method="post">
+    <ul class="my-ul">
+      <li>
+        <span class="input input--isao">
+          <input name="name" class="input__field input__field--isao" type="text" tabindex="1" ng-model="nameRequired" my-name-required required />
+          <label class="input__label input__label--isao" for="input-38" data-content="Name">
+            <span class="input__label-content input__label-content--isao">Name</span>
+          </label>
+        </span>
+      </li>
+      <li>
+        <span class="input input--isao">
+          <input name="email" class="input__field input__field--isao" tabindex="2" ng-model="emailRequired" my-email-required required />
+          <label class="input__label input__label--isao" for="input-39" data-content="Email address">
+            <span class="input__label-content input__label-content--isao">Email address</span>
+          </label>
+        </span>
+      </li>
+      <li>
+        <span class="input input--isao">
+          <input name="phone" class="input__field input__field--isao" type="text" tabindex="3" ng-model="phoneRequired" my-phone-required required/>
+          <label class="input__label input__label--isao" for="input-40" data-content="Phone number">
+            <span class="input__label-content input__label-content--isao">Phone number</span>
+          </label>
+        </span>
+      </li>
+      <li>
+        <label for="gender">Gender:</label>
+        <input type="radio" name="gender" value="Male" tabindex="4" required ng-click="checkRad()">Male
+        <input type="radio" name="gender" value="Female" tabindex="5" required ng-click="checkRad()">Female
+        <input type="radio" name="gender" value="Other" tabindex="5" required ng-click="checkRad()">Other
+      </li>
+      <li>
+        <label for="browser">Which browser are you running?</label>
+        <select id="select-browser" tabindex="6" required>
+          <option value="">Select Browser:</option>
+          <option value="Chrome">Chrome</option>
+          <option value="Firefox">Firefox</option>
+          <option value="Oprera">Opera</option>
+          <option value="Safari">Safari</option>
+          <option value="Yandex">Yandex</option>
+          <option value="Internet Explorer">Internet Explorer 9+</option>
+          <option value="Internet Explorer old">Internet Explorer 8 or earlier</option>
+          <option value="Amigo">Amigo</option>
+        </select>
+      </li>
+      <li>
+        <label for="comment">Comments:</label>
+        <textarea placeholder="Write your comment here..." name="comment" class="comment" autocomplete="off" role="textbox" tabindex="7" required></textarea>
+      </li>
+      <li>
+        <input type="submit" class="submit" value="Submit feedback" tabindex="8" ng-click="formSubmit()">
+      </li>
+    </ul>
+  </form>
+</div>

@@ -1,0 +1,53 @@
+<h2 class="table-header clearfix">
+  <strong>
+    <span class="glyphicon glyphicon-time" aria-hidden="true"></span>&nbsp Errors from visitor {{visitor_id}}</strong>
+  <small>&nbsp (Showing recent errors)</small>
+</h2>
+<div class="filter-tools">
+  <h4 class="domain-filter">
+    <strong>Domain:</strong>
+    <button type="button" class="btn btn-default domain-select" ng-model="selectedIcon" placement="auto" bs-options="icon.value as icon.label for icon in icons" bs-select>
+      <span class="caret"></span>
+    </button>
+  </h4>
+  <h4 class="date-filter">
+    <strong>For:</strong>
+    <button type="button" class="btn btn-default date-select" ng-model="selectedPeriod" placement="auto" bs-options="period.value as period.label for period in periods" bs-select>
+      <span class="caret"></span>
+    </button>
+  </h4>
+</div>
+<div ng-show="exist">
+  <div>
+    <!-- <div class="paging-btn-group">
+    <button class="btn-prev">Previous</button>
+    <button class="btn-next">Next</button>
+  </div> -->
+    <table class="table table-striped table-bordered table-link table-hover recent-errors">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Timestamp</th>
+          <th>Message</th>
+          <th>Url</th>
+          <th>Browser</th>
+          <th>OS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="item in recent" ng-click="getErrorInfo(item)">
+          <td>{{item.error_id}}</td>
+          <td>{{item.error_timestamp}}</td>
+          <td>{{item.error_msg}}</td>
+          <td>{{item.error_url}}</td>
+          <td>{{item.browser}}</td>
+          <td>{{item.OS}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class='data-not-exist' ng-show="!exist">
+  <h1><span class="glyphicon glyphicon-cog"></span>&nbsp We don't have any data!</h1>
+  <h3>Let's install the TrackJS error tracker in your application. It's super easy to get started. Don't worry, there's lots of options for you to customize this later.</h3>
+</div>

@@ -7,7 +7,7 @@ var visitors = function(app) {
           type: 'text',
           key: true
         },
-        timestamp: Number,
+        timestamp: String,
         browser: String,
         browser_version: String,
         OS: String,
@@ -15,7 +15,8 @@ var visitors = function(app) {
         mobile: String,
         cookies: String,
         flash_version: String,
-        viewport: String
+        viewport: String,
+        local_time: String
       });
       next();
     }

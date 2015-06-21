@@ -1,4 +1,4 @@
 angular.module('myApp')
   .constant('config', {
-    serverAddress: 'http://192.168.0.222:5000'
+    serverAddress: 'http://192.168.43.12:5000'
   });

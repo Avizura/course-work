@@ -10,15 +10,16 @@
     </div>
     <div class="collapse navbar-collapse navbar-ex1-collapse">
       <ul class="nav navbar-nav">
-        <li ng-class="{'active': $state.current.name.indexOf('home') >= 0}"><a ui-sref='about'>About</a>
+        <li ng-class="{'active': $state.current.name.indexOf('home') >= 0}"><a ui-sref='navbar.about'>About</a>
         </li>
-        <li ng-class="{'active': $state.current.name.indexOf('charts') >= 0}"><a ui-sref='charts'>Charts</a>
+        <li ng-class="{'active': $state.current.name.indexOf('charts') >= 0}"><a ui-sref='navbar.charts'>Charts</a>
         </li>
         <li ng-class="{'active': $state.current.name.indexOf('test') >= 0}"><a ui-sref='' ng-click='feedbackClick()'>Feedback</a>
         </li>
       </ul>
     </div>
   </nav>
+  <!-- <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert> -->
   <form name="myForm" method="post" class="feedback-form" ng-show=feedback>
     <ul id='feedback-elements'>
       <li>

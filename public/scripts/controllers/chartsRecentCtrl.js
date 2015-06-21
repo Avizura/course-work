@@ -4,10 +4,15 @@ angular.module('myApp')
       html: true
     });
   })
-  .controller('chartsRecentCtrl', function($scope, $http, $sce, config) {
+  .controller('chartsRecentCtrl', function($rootScope, $scope, $state, $http, $sce, config) {
     $scope.exist = true;
     $scope.page = 0;
     $scope.itemsPerPage = 1000;
+    $scope.getErrorInfo = function(info) {
+      console.log(info);
+      $rootScope.recent = info;
+      $state.go('navbar.charts.errorInfo');
+    };
     $scope.reqRecent = function(filter) {
       $http.post(config.serverAddress + '/recent', filter)
         .success(function(data, status, headers, config) {
@@ -19,8 +24,7 @@ angular.module('myApp')
               data[i].error_timestamp = new Date(data[i].error_timestamp).toLocaleString('ru');
             }
             $scope.recent = data;
-          }
-          else {
+          } else {
             $scope.exist = false;
           }
         });
@@ -37,6 +41,31 @@ angular.module('myApp')
           });
         }
       });
+
+    $scope.selectedPeriod = '';
+    $scope.periods = [{
+      value: '',
+      label: 'All Time'
+    }, {
+      value: '168',
+      label: 'Week'
+    }, {
+      value: '24',
+      label: '24 hours'
+    }, {
+      value: '12',
+      label: '12 hours'
+    }, {
+      value: '6',
+      label: '6 hours'
+    }, {
+      value: '2',
+      label: '2 hours'
+    }, {
+      value: '1',
+      label: '1 hour'
+    }];
+
     $scope.$watchGroup(['selectedIcon', 'selectedPeriod'], function() {
       $scope.reqRecent({
         selectedIcon: $scope.selectedIcon,

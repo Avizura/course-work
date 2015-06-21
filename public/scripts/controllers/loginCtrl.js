@@ -6,6 +6,9 @@ angular.module('myApp')
       email: ""
     };
     $scope.error = false;
+    if(isAuth.signed){
+      $scope.clicked = true;
+    }
     $scope.login = function() {
       $scope.error = false;
       $http.post(config.serverAddress + '/user/login', $scope.user)
@@ -22,17 +25,9 @@ angular.module('myApp')
         })
         .error(function(data, status, headers, config) {});
     };
-    $scope.logout = function() {
-      $http.post(config.serverAddress + '/user/logout')
-        .success(function(data) {
-          isAuth.value = false;
-          isAuth.login = '';
-          $state.go('home');
-          console.log(data);
-        })
-    };
     $scope.start = function() {
       $scope.clicked = true;
+      isAuth.signed = true;
     };
     $scope.signUp = function() {
       $state.go('registration');

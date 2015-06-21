@@ -12,6 +12,7 @@ var errors = function(app) {
         error_line: Number,
         error_column: Number,
         error_timestamp: String,
+        stacktrace: String,
         token: String,
         visitor_id: String
       });

@@ -1,6 +1,17 @@
 angular.module('myApp')
   .controller('chartsDashboardCtrl', function($scope, $http, config) {
     $scope.exist = true;
+    $scope.existForPeriod = true;
+    $scope.deltaReq = function(filter) {
+      $http.post(config.serverAddress + '/errorDelta', filter)
+        .success(function(data, status, headers, config) {
+          console.log('delta');
+          console.log(data);
+          console.log(Math.min(data['first'][0]['count(*)'], data['second'][0]['count(*)']));
+          $scope.delta = ((data['first'][0]['count(*)'] - data['second'][0]['count(*)']) * 100 / Math.min(data['first'][0]['count(*)'], data['second'][0]['count(*)'])).toPrecision(3);
+        });
+    };
+    $scope.deltaReq();
     //request for pieChart data
     $scope.pieChartReq = function(filter) {
       $http.post(config.serverAddress + '/hitsAndErrors', filter)
@@ -9,18 +20,20 @@ angular.module('myApp')
           console.log(data);
           if (!data.hits) {
             console.log('EMPTY!');
-            $scope.exist = false;
+          } else {
+            $scope.errorsPerHit = (data.errors / data.hits).toFixed(2);
+            $scope.errorRate = (data.errors / 24).toFixed(2);
+            $scope.chartPieConfig.series[0].data[0] = {
+              name: 'Hits',
+              y: data.hits,
+              color: '#1C75EA'
+            };
+            $scope.chartPieConfig.series[0].data[1] = {
+              name: 'Errors',
+              y: data.errors,
+              color: 'red'
+            };
           }
-          $scope.chartPieConfig.series[0].data[0] = {
-            name: 'Hits',
-            y: data.hits,
-            color: '#1C75EA'
-          };
-          $scope.chartPieConfig.series[0].data[1] = {
-            name: 'Errors',
-            y: data.errors,
-            color: 'red'
-          };
         })
         .error(function(data, status, headers, config) {
           console.log(data);
@@ -34,7 +47,9 @@ angular.module('myApp')
           console.log('TIMELINE DATA!');
           console.log(object);
           if (object) {
+            // $scope.exist = true;
             $scope.exist = true;
+            $scope.existForPeriod = true;
             $scope.chartAreaConfig.options.xAxis.categories.length = 0;
             $scope.chartAreaConfig.series[0].data.length = 0;
             $scope.chartAreaConfig.series[1].data.length = 0;
@@ -45,21 +60,54 @@ angular.module('myApp')
               };
               $scope.chartAreaConfig.series[1].data[i] = object.data[i].count;
             }
+          } else {
+            if (!$scope.selectedPeriod)
+              $scope.exist = false;
+            else
+              $scope.existForPeriod = false;
           }
-          else {
-            $scope.exist = false;
-          }
+          console.log($scope.exist, $scope.existForPeriod);
         })
         .error(function(data, status, headers, config) {});
     }
     $scope.areaChartReq();
+
+    $scope.selectedPeriod = '';
+    $scope.selectedLabel = 'All Time';
+    $scope.periods = [{
+      value: '',
+      label: 'All Time'
+    }, {
+      value: '720',
+      label: 'Month'
+    }, {
+      value: '168',
+      label: 'Week'
+    }, {
+      value: '4',
+      label: '4 days'
+    }, {
+      value: '72',
+      label: '3 days'
+    }, {
+      value: '48',
+      label: '2 days'
+    }, {
+      value: '24',
+      label: '1 day'
+    }];
     $scope.$watch('selectedPeriod', function() {
       $scope.areaChartReq({
         selectedPeriod: $scope.selectedPeriod
       });
       if (!$scope.selectedPeriod) {
+        $scope.selectedLabel = 'All Time';
         $scope.pieChartReq();
       } else {
+        $scope.selectedLabel = _.find($scope.periods, {
+          value: $scope.selectedPeriod
+        }).label;
+        console.log('TOURNAMENT', $scope.selectedLabel);
         $http.post(config.serverAddress + '/pieChart', {
             selectedPeriod: $scope.selectedPeriod
           })
@@ -68,24 +116,28 @@ angular.module('myApp')
             console.log(data);
             if (!data.hits) {
               console.log('EMPTY!');
-              $scope.exist = false;
+              // $scope.exist = false;
+            } else {
+              $scope.errorsPerHit = (data.errors / data.hits).toFixed(2);
+              $scope.errorRate = (data.errors / 24).toFixed(2);
+              $scope.chartPieConfig.series[0].data[0] = {
+                name: 'Hits',
+                y: data.hits,
+                color: '#1C75EA'
+              };
+              $scope.chartPieConfig.series[0].data[1] = {
+                name: 'Errors',
+                y: data.errors,
+                color: 'red'
+              };
             }
-            $scope.chartPieConfig.series[0].data[0] = {
-              name: 'Hits',
-              y: data.hits,
-              color: '#1C75EA'
-            };
-            $scope.chartPieConfig.series[0].data[1] = {
-              name: 'Errors',
-              y: data.errors,
-              color: 'red'
-            };
           })
           .error(function(data, status, headers, config) {
             console.log(data);
           });
       }
     });
+
 
     //request for top browsers/errors
     $http.post(config.serverAddress + '/browsers')

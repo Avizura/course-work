@@ -56,7 +56,7 @@ function login(req, res) {
 }
 
 function logout(req, res) {
-  req.session.isAuth = 'false';
+  req.session.isAuth = false;
   req.session.login = '';
   console.log(req.session);
   res.end('Logout success!');

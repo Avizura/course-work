@@ -1,23 +1,137 @@
-<html>
+<!doctype html>
+<html lang="en">
 
 <head>
-  <title>myTrackjs</title>
+  <title> lab1 Web </title>
   <meta charset="utf-8">
+  <link rel="stylesheet" href="bootstrap-3.3.2\dist\css\bootstrap.css">
+  <link rel="stylesheet" href="styles\style.css">
+  <link rel="stylesheet" href="HoverEffectIdeas/css/set2.css">
+  <!--BEGIN TRACK JS-->
   <script src="track.js" token="3SMeUKVsB2WNqwWR"></script>
+  <!--END TRACK JS-->
 </head>
 
 <body ng-app="myApp">
-  <h1> Client </h1>
-  <button type="button" name="button" onclick='lol()'>Жмяк!</button>
+  <nav class="navbar navbar-default nav">
+    <div class="container">
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-6">
+        <ul class="nav navbar-nav">
+          <li ng-class="{'active': $state.current.name.indexOf('home') >= 0}"><a ui-sref='home'>Home</a>
+          </li>
+          <li ng-click="" ng-class="{'active': $state.current.name.indexOf('about') >= 0}"><a ui-sref='about'>About</a>
+          </li>
+          <li class="dropdown">
+            <a class="dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true" ui-sref='asd'>Interests</a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
+            </ul>
+          </li>
+          <li ng-class="{'active': $state.current.name.indexOf('study') >= 0}"><a ui-sref='study'>Study</a>
+          </li>
+          <li ng-class="{'active': $state.current.name.indexOf('album') >= 0}"><a ui-sref='album'>Album</a>
+          </li>
+          <li ng-class="{'active': $state.current.name.indexOf('feedback') >= 0}"><a ui-sref='feedback'>Feedback</a>
+          </li>
+          <li ng-class="{'active': $state.current.name.indexOf('test') >= 0}"><a ui-sref='test'>Test</a>
+          </li>
+          <li>
+            <a clock></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <script>
+    // var a = eval('dsaqw');
+    var readFile = function() {
+      var a = eval('prosport');
+    };
+    var load = function() {
+      readFile();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    var saveChart = function(){
+      drawChart();
+    }
+    var getData = function() {
+      load();
+    }
+
+
+
+
+
+    var drawChart = function() {
+            getData();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    var releaseData = function(){
+      saveChart();
+    }
+
+
+
+
+
+
+
+    var finalStep = function(){
+      releaseData();
+    }
+    finalStep();
+  </script>
+  <div ui-view></div>
 </body>
-<script>
-  throw new Error();
-  var lol = function(){
-    throw new Error();
-  }
-</script>
-<script src="app.js"></script>
-<!--  <script src="/node_modules/angular/angular.js"></script>
-  <script src="/bower_components/jquery.js"></script>-->
+<script src="bower_components\jquery\dist\jquery.min.js"></script>
+<script src="bootstrap-3.3.2\dist\js\bootstrap.js"></script>
+<script src="bower_components\angular\angular.js"></script>
+<script src="bower_components\angular-ui-router\release\angular-ui-router.js"></script>
+<script src="scripts\app.js"></script>
+<script src="scripts\directives\myCarousel.js"></script>
+<script src="scripts\directives\myEmailRequired.js"></script>
+<script src="scripts\directives\myNameRequired.js"></script>
+<script src="scripts\directives\myPhoneRequired.js"></script>
+<script src="scripts\directives\clock.js"></script>
+<script src="scripts\controllers\mainCtrl.js"></script>
+<script src="scripts\controllers\aboutCtrl.js"></script>
+<script src="scripts\controllers\albumCtrl.js"></script>
+<script src="scripts\controllers\feedbackCtrl.js"></script>
+<script src="scripts\directives\stupidshit.js"></script>
+<!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script> -->
+<script src="http://code.highcharts.com/highcharts.js"></script>
 
 </html>

@@ -1,10 +1,24 @@
+<h2 class="table-header clearfix">
+  <strong>
+    <span class="glyphicon glyphicon-time" aria-hidden="true"></span>&nbsp Recent</strong>
+  <small>&nbsp (Showing recent errors)</small>
+</h2>
+<div class="filter-tools">
+  <h4 class="domain-filter">
+    <strong>Domain:</strong>
+    <button type="button" class="btn btn-default domain-select" ng-model="selectedIcon" placement="auto" bs-options="icon.value as icon.label for icon in icons" bs-select>
+      <span class="caret"></span>
+    </button>
+  </h4>
+  <h4 class="date-filter">
+    <strong>For:</strong>
+    <button type="button" class="btn btn-default date-select" ng-model="selectedPeriod" placement="auto" bs-options="period.value as period.label for period in periods" bs-select>
+      <span class="caret"></span>
+    </button>
+  </h4>
+</div>
 <div ng-show="exist">
   <div>
-    <h2 class="table-header clearfix">
-      <strong>
-        <span class="glyphicon glyphicon-time" aria-hidden="true"></span>&nbsp Recent</strong>
-      <small>&nbsp (Showing recent errors)</small>
-    </h2>
     <!-- <div class="paging-btn-group">
     <button class="btn-prev">Previous</button>
     <button class="btn-next">Next</button>
@@ -12,6 +26,7 @@
     <table class="table table-striped table-bordered table-link table-hover recent-errors">
       <thead>
         <tr>
+          <th>#</th>
           <th>Timestamp</th>
           <th>Message</th>
           <th>Url</th>
@@ -20,7 +35,8 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="item in recent | slice:page*itemsPerPage:page*itemsPerPage+itemsPerPage">
+        <tr ng-repeat="item in recent | slice:page*itemsPerPage:page*itemsPerPage+itemsPerPage" ng-click="getErrorInfo(item)">
+          <td>{{item.error_id}}</td>
           <td>{{item.error_timestamp}}</td>
           <td>{{item.error_msg}}</td>
           <td>{{item.error_url}}</td>

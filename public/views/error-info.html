@@ -1,0 +1,45 @@
+<div class="my-header clearfix">
+  <h2>
+    <strong>
+      <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>&nbsp {{recent.error_msg}}</strong>
+    <small>&nbsp ({{recent.error_timestamp}})</small>
+    <i class="js-star-icon" style="font-size: 30px" ng-click='setStar()' ng-class="star"></i>
+  </h2>
+</div>
+<div class="clearfix">
+  <div id="stacktrace">
+    <div class="info-header">Error Stack Trace
+    </div>
+    <div class="stacktrace-info" ng-repeat="item in errorInfo.stacktrace">{{item}}</div>
+  </div>
+  <div id="general" class="clearfix">
+    <div class="info-header centered">
+      <strong>General Information</strong>
+    </div>
+    <div id="general-body" class="clearfix">
+      <div class="centered">
+        <strong>Url</strong>
+      </div>
+      <a class="centered">{{recent.error_url}}</a>
+      <div id="general-left">
+        <div>Visitor IP</div>
+        <span>{{errorInfo.visitor_id}}</span>
+        <div>Timestamp</div>
+        <span>{{recent.error_timestamp}}</span>
+        <div>Visitor Time</div>
+        <span>{{errorInfo.local_time}}</span>
+      </div>
+      <div id="general-right">
+        <div>Browser</div>
+        <span>{{recent.browser}} {{errorInfo.browser_version}}</span>
+        <div>Operation System</div>
+        <span>{{recent.OS}}</span>
+        <div>Viewport</div>
+        <span>{{errorInfo.viewport}}</span>
+      </div>
+    </div>
+    <div class="clearfix">
+      <div class="centered"><a ng-click="moreFromVisitor()">More from this Visitor</a></div>
+    </div>
+  </div>
+</div>

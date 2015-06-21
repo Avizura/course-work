@@ -1,0 +1,58 @@
+<div class="container my-container">
+  <h1> Test </h1>
+  <form name="myForm" method="post">
+    <ul class="my-ul">
+      <li>
+        <span class="input input--isao">
+          <input name="name" class="input__field input__field--isao" type="text" ng-model="nameRequired" my-name-required required />
+          <label class="input__label input__label--isao" for="input-38" data-content="Name">
+            <span class="input__label-content input__label-content--isao">Name</span>
+          </label>
+        </span>
+      </li>
+      <li>
+        <select id="group" required>
+          <option value="">Select group:</option>
+          <optgroup label="1 course">
+            <option value="11">IT-11</option>
+            <option value="12">IT-12</option>
+            <option value="13">IT-13</option>
+          </optgroup>
+          <optgroup label="2 course">
+            <option value="21">IT-21</option>
+            <option value="22">IT-22</option>
+            <option value="23">IT-23</option>
+          </optgroup>
+          <optgroup label="3 course">
+            <option value="31">IT-31</option>
+            <option value="32">IT-32</option>
+            <option value="33">IT-33</option>
+          </optgroup>
+        </select>
+      </li>
+      <li>
+        <label for="question1">Question #1!</label>
+        <textarea placeholder="Write your answer here..." name="question1" class="comment" autocomplete="off" role="textbox" required></textarea>
+      </li>
+      <li>
+        <label for="answer">Question #2!</label>
+        <input type="radio" name="answer" value="1" required>One
+        <input type="radio" name="answer" value="2" required>Two
+        <input type="radio" name="answer" value="3" required>Three
+        <input type="radio" name="answer" value="4" required>Four
+      </li>
+      <li>
+        <label for="question3">Question #3!</label>
+        <select id="question3">
+          <option value="">Choose answer:</option>
+          <option value="Answer 1">Answer 1</option>
+          <option value="Answer 2">Answer 2</option>.
+          <option value="Answer 3">Answer 3</option>
+        </select>
+      </li>
+      <li>
+        <input type="submit" class="submit" value="Submit test" tabindex="8" ng-click="formSubmit()">
+      </li>
+    </ul>
+  </form>
+</div>

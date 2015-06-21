@@ -1,9 +1,23 @@
-<div ng-show="exist">
   <h2 class="table-header clearfix">
     <strong>
       <span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp Users</strong>
     <small>&nbsp (Errors Grouped by User ID)</small>
   </h2>
+  <div class="filter-tools">
+    <h4 class="domain-filter">
+      <strong>Domain:</strong>
+      <button type="button" class="btn btn-default domain-select" ng-model="selectedIcon" placement="auto" bs-options="icon.value as icon.label for icon in icons" bs-select>
+        <span class="caret"></span>
+      </button>
+    </h4>
+    <h4 class="date-filter">
+      <strong>For:</strong>
+      <button type="button" class="btn btn-default date-select" ng-model="selectedPeriod" placement="auto" bs-options="period.value as period.label for period in periods" bs-select>
+        <span class="caret"></span>
+      </button>
+    </h4>
+  </div>
+<div ng-show="exist">
   <!-- <div class="paging-btn-group">
   <button class="btn-prev">Previous</button>
   <button class="btn-next">Next</button>

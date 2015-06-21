@@ -7,8 +7,7 @@ console.log(token);
   request.open('POST', serverAddress + '/hit', true);
   request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   request.send(toUrlEncoded({
-    token: _token,
-    date: new Date().toLocaleDateString('ru')
+    token: _token
   }));
 })(token)
 
@@ -22,22 +21,21 @@ function toUrlEncoded(obj) {
 
 window.onerror = function(msg, url, line, column, err) {
   console.log('Bingo ' + err.stack);
-  // console.log(err.stack.split(/^    at/gm));
-  // console.log(err.stack.split(/\bat\b/g)[0]);
-  // console.log(err.stack.split(/\bat\b/g)[1]);
-  // console.log(err.stack.split(/\bat\b/g)[2]);
+  console.log('LOOK! ' + err);
   var error = {
     msg: msg,
     url: url,
     line: line,
     column: column,
-    token: token
+    token: token,
+    stack: err.stack
   };
   request.onreadystatechange = function() {
     if (request.readyState == 4 && request.status == 200) {
       console.log(request.responseText);
       if (request.responseText === 'false') {
         var visitor = clientInfo(window);
+        visitor.time = new Date().toLocaleDateString("ru");
         console.log(visitor);
         request.open('POST', serverAddress + '/visitor', true);
         request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");

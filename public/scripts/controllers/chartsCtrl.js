@@ -1,14 +1,13 @@
 angular.module('myApp')
   .controller('chartsCtrl', function($scope, $state, $http, config) {
-    $scope.clicked = true;
+    // $scope.getState = function() {
+    //   if ($state.current.name === 'navbar.charts.dashboard')
+    //     return false;
+    //   else return true;
+    // }
 
-    $scope.getState = function() {
-      if ($state.current.name === 'navbar.charts.dashboard')
-        return false;
-      else return true;
-    }
-
-    $scope.chartsData = false;
+    // $scope.chartsData = false;
+    $state.go('navbar.charts.dashboard');
     $http.post(config.serverAddress + '/recentUrls')
       .success(function(urls, status, headers, config) {
         console.log(urls);
@@ -24,27 +23,27 @@ angular.module('myApp')
       value: '',
       label: 'Show All'
     }];
-    $scope.selectedPeriod = '';
-    $scope.periods = [{
-      value: '',
-      label: 'All Time'
-    }, {
-      value: '168',
-      label: 'Week'
-    }, {
-      value: '24',
-      label: '24 hours'
-    }, {
-      value: '12',
-      label: '12 hours'
-    }, {
-      value: '6',
-      label: '6 hours'
-    }, {
-      value: '2',
-      label: '2 hours'
-    }, {
-      value: '1',
-      label: '1 hour'
-    }];
+    // $scope.selectedPeriod = '';
+    // $scope.periods = [{
+    //   value: '',
+    //   label: 'All Time'
+    // }, {
+    //   value: '168',
+    //   label: 'Week'
+    // }, {
+    //   value: '24',
+    //   label: '24 hours'
+    // }, {
+    //   value: '12',
+    //   label: '12 hours'
+    // }, {
+    //   value: '6',
+    //   label: '6 hours'
+    // }, {
+    //   value: '2',
+    //   label: '2 hours'
+    // }, {
+    //   value: '1',
+    //   label: '1 hour'
+    // }];
   });
