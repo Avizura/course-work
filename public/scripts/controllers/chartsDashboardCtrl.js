@@ -14,7 +14,7 @@ angular.module('myApp')
     $scope.deltaReq();
     //request for pieChart data
     $scope.pieChartReq = function(filter) {
-      $http.post(config.serverAddress + '/hitsAndErrors', filter)
+      $http.post(config.serverAddress + '/pieChart', filter)
         .success(function(data, status, headers, config) {
           console.log('Check hits!');
           console.log(data);
@@ -84,7 +84,7 @@ angular.module('myApp')
       value: '168',
       label: 'Week'
     }, {
-      value: '4',
+      value: '96',
       label: '4 days'
     }, {
       value: '72',
@@ -100,41 +100,15 @@ angular.module('myApp')
       $scope.areaChartReq({
         selectedPeriod: $scope.selectedPeriod
       });
+      $scope.pieChartReq({
+        selectedPeriod: $scope.selectedPeriod
+      });
       if (!$scope.selectedPeriod) {
         $scope.selectedLabel = 'All Time';
-        $scope.pieChartReq();
       } else {
         $scope.selectedLabel = _.find($scope.periods, {
           value: $scope.selectedPeriod
         }).label;
-        console.log('TOURNAMENT', $scope.selectedLabel);
-        $http.post(config.serverAddress + '/pieChart', {
-            selectedPeriod: $scope.selectedPeriod
-          })
-          .success(function(data, status, headers, config) {
-            console.log('Check hits!');
-            console.log(data);
-            if (!data.hits) {
-              console.log('EMPTY!');
-              // $scope.exist = false;
-            } else {
-              $scope.errorsPerHit = (data.errors / data.hits).toFixed(2);
-              $scope.errorRate = (data.errors / 24).toFixed(2);
-              $scope.chartPieConfig.series[0].data[0] = {
-                name: 'Hits',
-                y: data.hits,
-                color: '#1C75EA'
-              };
-              $scope.chartPieConfig.series[0].data[1] = {
-                name: 'Errors',
-                y: data.errors,
-                color: 'red'
-              };
-            }
-          })
-          .error(function(data, status, headers, config) {
-            console.log(data);
-          });
       }
     });
 

@@ -6,7 +6,6 @@ var express = require('express'),
   app = express(),
   server,
   server_port = '5000',
-  // path = require('path'),
   util = require('./server/config/util.js'),
   appPath = process.cwd(),
   orm = require('orm'),
@@ -124,8 +123,7 @@ app.post('/hit', function(req, res) {
     if (hits[0]) {
       hits[0].count++;
       hits[0].save(function(err) {
-        console.log('saved!!');
-        // console.log(err);
+        console.log(err);
       });
     } else {
       console.log('hits false');
@@ -136,7 +134,7 @@ app.post('/hit', function(req, res) {
           count: 1
         },
         function(err, items) {
-          // console.log(err);
+          console.log(err);
         });
     }
   });
@@ -157,7 +155,6 @@ app.post('/errorDelta', function(req, res) {
     } else if (req.body.selectedPeriod) {
       request = 'select errors.error_id, errors.error_timestamp, errors.error_msg, errors.error_url, visitors.browser, visitors.OS from errors join visitors on errors.visitor_id = visitors.visitor_id  where errors.error_timestamp > now() - interval ' + req.body.selectedPeriod + ' hour order by errors.error_timestamp desc;';
     }
-    // console.log(request);
     connection.query(request, function(err, firstData, fields) {
       if (err) {
         console.log(err);
@@ -177,38 +174,23 @@ app.post('/errorDelta', function(req, res) {
   });
 });
 
-app.post('/hitsAndErrors', function(req, res) {
-  var errorsCount = 0;
-  var hitsCount = 0;
-  req.models.tokens.get(req.session.login, function(err, user) {
-    if (user)
-      req.models.hits.find({
-        token: user.token
-      }, function(err, hits) {
-        console.log('HITS!!!');
-        console.log(err, hits);
-        if (hits) {
-          for (var i = 0; i < hits.length; ++i) {
-            hitsCount += hits[i].count;
-          }
-          console.log(hitsCount);
-          req.models.errors.count('error_id', function(err, count) {
-            errorsCount = count;
-            res.json({
-              hits: hitsCount,
-              errors: errorsCount
-            });
-          });
-        }
-      });
-  });
-});
-
 app.post('/pieChart', function(req, res) {
+  var hitsRequest, errorsRequest;
   var hitsCount = 0;
   req.models.tokens.get(req.session.login, function(err, user) {
-    if (user)
-      connection.query('select count from hits where token = \"' + user.token + '\" and hit_date > curdate() - interval \"' + req.body.selectedPeriod + '\" hour;', function(err, rows, fields) {
+    if (!req.body.selectedPeriod) {
+      console.log('pieChart false');
+      hitsRequest = 'select count from hits where token = \"' + user.token + '\";';
+      errorsRequest = 'select count(*) from errors where token = \"' + user.token + '\";';
+    } else {
+      console.log('pieChart true');
+      console.log(req.body.selected)
+      hitsRequest = 'select count from hits where token = \"' + user.token + '\" and hit_date > curdate() - interval \"' + req.body.selectedPeriod + '\" hour;';
+      errorsRequest = 'select count(*) from errors where token = \"' + user.token + '\" and error_timestamp > curdate() - interval \"' + req.body.selectedPeriod + '\" hour;';
+    }
+    if (!user)
+      return;
+      connection.query(hitsRequest, function(err, rows, fields) {
         if (err) {
           console.log(err);
         }
@@ -218,11 +200,14 @@ app.post('/pieChart', function(req, res) {
           for (var i = 0; i < rows.length; ++i) {
             hitsCount += rows[i].count;
           }
-          connection.query('select count(*) from errors where token = \"' + user.token + '\" and error_timestamp > curdate() - interval \"' + req.body.selectedPeriod + '\" hour;', function(err, rows, fields) {
+          connection.query(errorsRequest, function(err, rows, fields) {
             if (err) {
               console.log(err);
             }
             if ('undefined' != typeof(rows[0])) {
+              console.log('AVI HERE');
+              console.log(hitsCount);
+              console.log(rows[0]['count(*)']);
               res.json({
                 hits: hitsCount,
                 errors: rows[0]['count(*)']
@@ -232,9 +217,9 @@ app.post('/pieChart', function(req, res) {
             }
           });
         } else {
-          console.log('hits count not found!');
+        console.log('hits count not found!');
         }
-      });
+     });
   });
 });
 
@@ -243,6 +228,15 @@ app.post('/areaChart', function(req, res) {
   req.models.tokens.get(req.session.login, function(err, user) {
     if (!user)
       return;
+      // if (!req.body.selectedIcon && !req.body.selectedPeriod) {
+      //   request = 'select errors.error_id, errors.error_timestamp, errors.error_msg, errors.error_url, visitors.browser, visitors.OS from errors join visitors on errors.visitor_id = visitors.visitor_id where errors.token = \"' + user.token + '\" order by errors.error_timestamp desc;';
+      // } else if (req.body.selectedIcon && req.body.selectedPeriod) {
+      //   request = 'select errors.error_id, errors.error_timestamp, errors.error_msg, errors.error_url, visitors.browser, visitors.OS from errors join visitors on errors.visitor_id = visitors.visitor_id  where errors.token = \"' + user.token + '\" and errors.error_url = \"' + req.body.selectedIcon + '\" and errors.error_timestamp > now() - interval \"' + req.body.selectedPeriod + '\" hour order by errors.error_timestamp desc;';
+      // } else if (req.body.selectedIcon) {
+      //   request = 'select errors.error_id, errors.error_timestamp, errors.error_msg, errors.error_url, visitors.browser, visitors.OS from errors join visitors on errors.visitor_id = visitors.visitor_id  where errors.token = \"' + user.token + '\" and errors.error_url = \"' + req.body.selectedIcon + '\" order by errors.error_timestamp desc;';
+      // } else if (req.body.selectedPeriod) {
+      //   request = 'select errors.error_id, errors.error_timestamp, errors.error_msg, errors.error_url, visitors.browser, visitors.OS from errors join visitors on errors.visitor_id = visitors.visitor_id  where errors.token = \"' + user.token + '\" and errors.error_timestamp > now() - interval ' + req.body.selectedPeriod + ' hour order by errors.error_timestamp desc;';
+      // }
     if (!req.body.selectedPeriod) {
       request = 'select count(*), hits.hit_date, hits.count from errors join hits on date(errors.error_timestamp) = hits.hit_date and errors.token = hits.token where errors.token = \"' + user.token + '\" group by hit_date order by hit_date limit 6;';
     } else {
@@ -267,19 +261,6 @@ app.post('/areaChart', function(req, res) {
     });
   });
 });
-
-// app.post('/timeline', function(req, res) {
-//   req.models.tokens.get(req.session.login, function(err, user) {
-//     req.models.errors.aggregate(['error_date'], {token: user.token}).count().groupBy('error_date').order('error_date', 'Z').limit(6).get(function(err, errors) {
-//       req.models.hits.find({token: user.token}, ['hit_date', 'Z'], {limit: 6}, function(err, hits) {
-//         res.json({
-//           errors: errors,
-//           hits: hits
-//         });
-//       });
-//     });
-//   });
-// });
 
 app.post('/browsers', function(req, res) {
   req.models.tokens.get(req.session.login, function(err, user) {
@@ -469,14 +450,7 @@ app.post('/getStarred', function(req, res) {
   });
 });
 
-// req.models.starred.find({}).only("error_id").run(function(err, errors){
-// db.driver.execQuery("SELECT * from errors where error_id = "+errors[0].error_id+";", function (err, data) {
-// console.log(err, data);
-// });
-
 app.post('/fromVisitor', function(req, res) {
-  console.log("AHAHHAHAHAHAHAHAHAHAHAHHA");
-  console.log(req.body);
   if(!req.body.visitor_id)
     return;
   req.models.tokens.get(req.session.login, function(err, user) {

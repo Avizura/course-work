@@ -19,6 +19,7 @@ function toUrlEncoded(obj) {
   return urlEncoded;
 }
 
+
 window.onerror = function(msg, url, line, column, err) {
   console.log('Bingo ' + err.stack);
   console.log('LOOK! ' + err);
